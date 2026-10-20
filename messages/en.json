@@ -1,0 +1,123 @@
+{
+  "Header": {
+    "home": "Home",
+    "products": "All Perfumes",
+    "men": "Men",
+    "women": "Women",
+    "oriental": "Oriental Perfumes",
+    "brands": "Brands",
+    "offers": "Offers",
+    "search": "Search for your favorite perfume...",
+    "searchLabel": "Search",
+    "wishlist": "Wishlist",
+    "cart": "Shopping Cart"
+  },
+
+  "Announcement": {
+    "delivery": "Fast delivery",
+    "secure": "Secure payment",
+    "support": "Premium customer support"
+  },
+
+  "Hero": {
+    "eyebrow": "A WORLD OF ELEGANCE",
+    "title": "Fragrances That",
+    "highlight": "Tell Your Story",
+    "description": "Discover a curated collection of distinctive fragrances combining elegance, quality and an unforgettable presence.",
+    "shopNow": "Shop Now",
+    "offers": "View Offers",
+    "delivery": "Fast Delivery",
+    "selected": "Carefully Selected",
+    "packaging": "Premium Packaging"
+  },
+  "Categories": {
+  "eyebrow": "DISCOVER OUR COLLECTION",
+  "title": "Shop by Category",
+  "description": "Explore carefully selected fragrance collections made for every style and presence.",
+  "men": "Men's Perfumes",
+  "menDescription": "Bold and elegant fragrances with a distinctive presence",
+  "women": "Women's Perfumes",
+  "womenDescription": "Refined fragrances with captivating feminine notes",
+  "oriental": "Oriental Perfumes",
+  "orientalDescription": "Oud, amber and musk with a luxurious oriental soul",
+  "niche": "Niche Perfumes",
+  "nicheDescription": "Exceptional compositions created for fragrance lovers",
+  "explore": "Explore Collection"
+},
+"BestSellers": {
+  "eyebrow": "CUSTOMER FAVORITES",
+  "title": "Best Sellers",
+  "description": "Discover our most requested fragrances and customer favorites.",
+  "viewAll": "View All Perfumes"
+},
+"Collections": {
+  "eyebrow": "FEATURED COLLECTION",
+  "title": "The Spirit of the East",
+  "highlight": "In Every Note",
+  "description": "Discover a luxurious selection of oriental fragrances blending oud, amber and musk for an unforgettable presence.",
+  "cta": "Explore Collection"
+},
+"NewArrivals": {
+  "eyebrow": "JUST ARRIVED",
+  "title": "New Arrivals",
+  "description": "Discover the latest fragrances added to the Wasama Perfume collection.",
+  "viewAll": "View All Perfumes"
+},
+"Features": {
+  "eyebrow": "THE WASAMA EXPERIENCE",
+  "title": "Why Wasama Perfume?",
+  "description": "Every detail is considered to deliver a shopping experience worthy of fine fragrance.",
+
+  "qualityTitle": "Quality We Trust",
+  "qualityDescription": "Our products are carefully selected to deliver a fragrance experience you can trust.",
+
+  "selectionTitle": "Curated Selection",
+  "selectionDescription": "A diverse collection of men's, women's and oriental fragrances for different tastes.",
+
+  "deliveryTitle": "Careful Packaging",
+  "deliveryDescription": "Every order is prepared and packaged with care before it reaches your door.",
+
+  "supportTitle": "Customer Support",
+  "supportDescription": "We're here to help with fragrance selection and your questions before and after ordering."
+},
+"InstagramGallery": {
+  "eyebrow": "THE WORLD OF WASAMA",
+  "title": "Fragrance Is a Lifestyle",
+  "description": "Moments and details inspired by the world of fragrance and elegance.",
+  "follow": "Follow Us on Instagram",
+  "imageAlt": "Wasama Perfume"
+},
+"Newsletter": {
+  "eyebrow": "STAY UPDATED",
+  "title": "Be the First to Discover What's New",
+  "description": "Subscribe for new fragrances, exclusive offers and curated collections from Wasama Perfume.",
+  "emailLabel": "Email address",
+  "placeholder": "Enter your email address",
+  "button": "Subscribe",
+  "privacy": "By subscribing, you agree to receive marketing emails from Wasama Perfume."
+},
+"Footer": {
+  "description": "Wasama Perfume is your destination for a curated selection of men's, women's and oriental fragrances.",
+
+  "shop": "Shop",
+  "allProducts": "All Perfumes",
+  "men": "Men's Perfumes",
+  "women": "Women's Perfumes",
+  "oriental": "Oriental Perfumes",
+  "offers": "Offers",
+
+  "help": "Customer Care",
+  "about": "About Us",
+  "contact": "Contact Us",
+  "shipping": "Shipping & Delivery",
+  "returns": "Returns & Exchanges",
+
+  "contactTitle": "Contact Us",
+  "location": "Egypt",
+
+  "privacy": "Privacy Policy",
+  "terms": "Terms & Conditions",
+
+  "copyright": "Codevers. All rights reserved."
+}
+}

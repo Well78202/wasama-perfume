@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowLeft,
-  Crown,
-} from "lucide-react";
+import { ArrowLeft, Crown } from "lucide-react";
 
 import Header from "@/app/components/layout/Header";
 import Footer from "@/app/components/layout/Footer";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
+
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "ماركات العطور",
-  description:
-    "اكتشف أشهر ماركات العطور في وسامة برفيوم وتسوق مجموعات مختارة من العطور الرجالية والحريمية والشرقية.",
+  description: "اكتشف أشهر ماركات العطور في وسامة برفيوم وتسوق مجموعات مختارة من العطور الرجالية والحريمية والشرقية.",
 };
 
 export default async function BrandsPage() {
@@ -65,14 +63,9 @@ export default async function BrandsPage() {
             <div className="mb-5 flex items-center justify-center gap-3">
               <span className="h-px w-8 bg-[#c69560]" />
 
-              <Crown
-                size={15}
-                className="text-[#a66d36]"
-              />
+              <Crown size={15} className="text-[#a66d36]" />
 
-              <span className="text-xs font-bold tracking-[0.2em] text-[#a66d36]">
-                وسامة برفيوم
-              </span>
+              <span className="text-xs font-bold tracking-[0.2em] text-[#a66d36]">وسامة برفيوم</span>
 
               <span className="h-px w-8 bg-[#c69560]" />
             </div>
@@ -82,8 +75,7 @@ export default async function BrandsPage() {
             </h1>
 
             <p className="mx-auto mt-5 max-w-2xl text-sm leading-8 text-neutral-600 sm:text-base">
-              اكتشف مجموعة من أشهر بيوت وماركات العطور واختر
-              عطرك المفضل من مجموعاتنا المختارة.
+              اكتشف مجموعة من أشهر بيوت وماركات العطور واختر عطرك المفضل من مجموعاتنا المختارة.
             </p>
           </div>
         </section>
@@ -96,20 +88,13 @@ export default async function BrandsPage() {
 
             <div className="mb-10 flex items-end justify-between gap-5 border-b border-black/10 pb-5 sm:mb-12">
               <div>
-                <p className="mb-2 text-xs font-bold tracking-[0.16em] text-[#a66d36]">
-                  تسوق حسب الماركة
-                </p>
+                <p className="mb-2 text-xs font-bold tracking-[0.16em] text-[#a66d36]">تسوق حسب الماركة</p>
 
-                <h2 className="text-2xl font-extrabold text-[#171411] sm:text-3xl">
-                  جميع الماركات
-                </h2>
+                <h2 className="text-2xl font-extrabold text-[#171411] sm:text-3xl">جميع الماركات</h2>
               </div>
 
               <p className="text-sm text-neutral-500">
-                <span className="font-bold text-[#171411]">
-                  {brands.length}
-                </span>{" "}
-                ماركة
+                <span className="font-bold text-[#171411]">{brands.length}</span> ماركة
               </p>
             </div>
 
@@ -161,10 +146,7 @@ export default async function BrandsPage() {
 
                     <div className="relative flex items-start justify-between">
                       <span className="text-[10px] font-bold tracking-[0.15em] text-neutral-400">
-                        {String(index + 1).padStart(
-                          2,
-                          "0",
-                        )}
+                        {String(index + 1).padStart(2, "0")}
                       </span>
 
                       <span
@@ -176,56 +158,44 @@ export default async function BrandsPage() {
                           text-[#80664c]
                         "
                       >
-                        {brand._count.products}{" "}
-                        {brand._count.products === 1
-                          ? "منتج"
-                          : "منتجات"}
+                        {brand._count.products} {brand._count.products === 1 ? "منتج" : "منتجات"}
                       </span>
                     </div>
 
                     {/* Brand */}
-{/* Brand Logo & Name */}
+                    {/* Brand Logo & Name */}
 
-<div className="relative flex flex-1 flex-col items-center justify-center gap-4 py-7 text-center">
-  {brand.logo ? (
-    <div className="relative flex h-24 w-full max-w-44 items-center justify-center sm:h-28">
-      <Image
-        src={brand.logo}
-        alt={`شعار ${brand.nameAr}`}
-        fill
-        sizes="(max-width: 640px) 160px, 176px"
-        className="object-contain transition-transform duration-500 group-hover:scale-105"
-      />
-    </div>
-  ) : (
-    <div className="flex h-24 items-center justify-center sm:h-28">
-      <Crown
-        size={34}
-        strokeWidth={1.2}
-        className="text-[#b98b58]/60"
-      />
-    </div>
-  )}
+                    <div className="relative flex flex-1 flex-col items-center justify-center gap-4 py-7 text-center">
+                      {brand.logo ? (
+                        <div className="relative flex h-24 w-full max-w-44 items-center justify-center sm:h-28">
+                          <Image
+                            src={brand.logo}
+                            alt={`شعار ${brand.nameAr}`}
+                            fill
+                            sizes="(max-width: 640px) 160px, 176px"
+                            className="object-contain transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                      ) : (
+                        <div className="flex h-24 items-center justify-center sm:h-28">
+                          <Crown size={34} strokeWidth={1.2} className="text-[#b98b58]/60" />
+                        </div>
+                      )}
 
-  <div>
-    <h3 className="text-lg font-extrabold text-[#171411] transition-colors group-hover:text-[#a66d36] sm:text-xl">
-      {brand.nameAr}
-    </h3>
+                      <div>
+                        <h3 className="text-lg font-extrabold text-[#171411] transition-colors group-hover:text-[#a66d36] sm:text-xl">
+                          {brand.nameAr}
+                        </h3>
 
-    <p
-      dir="ltr"
-      className="mt-1 text-xs font-semibold tracking-wide text-neutral-500"
-    >
-      {brand.nameEn}
-    </p>
-  </div>
-</div>
+                        <p dir="ltr" className="mt-1 text-xs font-semibold tracking-wide text-neutral-500">
+                          {brand.nameEn}
+                        </p>
+                      </div>
+                    </div>
                     {/* Bottom */}
 
                     <div className="relative flex items-center justify-between border-t border-[#ded0bd] pt-4">
-                      <span className="text-xs font-bold text-[#171411]">
-                        اكتشف العطور
-                      </span>
+                      <span className="text-xs font-bold text-[#171411]">اكتشف العطور</span>
 
                       <span
                         className="
@@ -250,13 +220,9 @@ export default async function BrandsPage() {
             ) : (
               <div className="flex min-h-80 items-center justify-center rounded-3xl border border-[#e5d8c8] bg-[#f7eee3] px-6 text-center">
                 <div>
-                  <h2 className="text-xl font-extrabold text-[#171411]">
-                    لا توجد ماركات حاليًا
-                  </h2>
+                  <h2 className="text-xl font-extrabold text-[#171411]">لا توجد ماركات حاليًا</h2>
 
-                  <p className="mt-2 text-sm text-neutral-500">
-                    سيتم إضافة ماركات جديدة قريبًا.
-                  </p>
+                  <p className="mt-2 text-sm text-neutral-500">سيتم إضافة ماركات جديدة قريبًا.</p>
                 </div>
               </div>
             )}
@@ -282,17 +248,12 @@ export default async function BrandsPage() {
               />
 
               <div className="relative">
-                <p className="text-xs font-bold tracking-[0.2em] text-[#d5a86e]">
-                  جميع العطور
-                </p>
+                <p className="text-xs font-bold tracking-[0.2em] text-[#d5a86e]">جميع العطور</p>
 
-                <h2 className="mt-4 text-3xl font-extrabold text-white sm:text-4xl">
-                  اكتشف مجموعتنا الكاملة
-                </h2>
+                <h2 className="mt-4 text-3xl font-extrabold text-white sm:text-4xl">اكتشف مجموعتنا الكاملة</h2>
 
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/60">
-                  تصفح جميع العطور المتاحة من مختلف الماركات
-                  والمجموعات في مكان واحد.
+                  تصفح جميع العطور المتاحة من مختلف الماركات والمجموعات في مكان واحد.
                 </p>
 
                 <Link
@@ -311,7 +272,6 @@ export default async function BrandsPage() {
                   "
                 >
                   عرض كل العطور
-
                   <ArrowLeft size={17} />
                 </Link>
               </div>

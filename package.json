@@ -7,7 +7,7 @@
     "build": "prisma generate && next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "postinstall": "prisma skills sync || exit 0"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@neon/config": "^1.8.2",
@@ -18,7 +18,7 @@
     "dotenv": "^18.0.4",
     "lightningcss": "^1.33.0",
     "lucide-react": "^1.48.0",
-    "next": "16.3.6",
+    "next": "^16.4.6",
     "next-auth": "^5.0.0-beta.32",
     "next-intl": "^4.14.7",
     "react": "19.2.8",
@@ -31,9 +31,17 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.3.6",
+    "eslint-config-next": "^16.4.6",
     "prisma": "^6.19.3",
     "tailwindcss": "^4.3.5",
     "typescript": "^5"
+  },
+  "overrides": {
+    "source-map-js": "^1.2.2",
+    "minimatch@^10": [
+      [
+        "^11.0.1"
+      ]
+    ]
   }
 }

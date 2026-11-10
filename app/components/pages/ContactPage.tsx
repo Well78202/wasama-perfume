@@ -94,8 +94,8 @@ export default function ContactPage({ locale }: ContactPageProps) {
     <main dir={ar ? "rtl" : "ltr"} className="w-full overflow-hidden bg-white text-[#1c1916]">
       {/* HERO */}
       <section className="relative overflow-hidden bg-[#faf7f2] px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
-        <div className="pointer-events-none absolute -top-40 left-[-100px] h-96 w-96 rounded-full bg-[#b8844f]/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-40 right-[-100px] h-96 w-96 rounded-full bg-[#b8844f]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-40 -left-25 h-96 w-96 rounded-full bg-[#b8844f]/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-40 -right-25 h-96 w-96 rounded-full bg-[#b8844f]/10 blur-3xl" />
 
         <div className="relative mx-auto max-w-6xl text-center">
           <div className="mb-7 flex items-center justify-center gap-4">
@@ -213,7 +213,7 @@ export default function ContactPage({ locale }: ContactPageProps) {
         <div className="mx-auto max-w-3xl">
           <p className="mb-6 text-xs font-bold tracking-[0.2em] text-[#b8844f]">WASAMA PERFUME</p>
 
-          <h2 className="text-3xl font-extrabold leading-[1.5] sm:text-4xl lg:text-5xl">{content.finalTitle}</h2>
+          <h2 className="text-3xl font-extrabold leading-normal sm:text-4xl lg:text-5xl">{content.finalTitle}</h2>
 
           <p className="mx-auto mt-6 max-w-xl text-sm leading-8 text-[#746d65] sm:text-base">
             {content.finalDescription}

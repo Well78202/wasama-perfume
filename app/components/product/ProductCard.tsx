@@ -47,7 +47,7 @@ export default function ProductCard({ locale, product }: ProductCardProps) {
     >
       {/* ================= PRODUCT IMAGE ================= */}
 
-      <div className="relative aspect-[4/5] overflow-hidden bg-[#171717]">
+      <div className="relative aspect-4/5 overflow-hidden bg-[#171717]">
         {/* Product Link */}
         <Link href={productUrl} aria-label={product.name} className="absolute inset-0 z-20" />
 
@@ -77,7 +77,7 @@ export default function ProductCard({ locale, product }: ProductCardProps) {
             pointer-events-none
             absolute inset-x-0 top-0 z-10
             h-32
-            bg-gradient-to-b
+            bg-linear-to-b
             from-black/45
             via-black/15
             to-transparent
@@ -90,7 +90,7 @@ export default function ProductCard({ locale, product }: ProductCardProps) {
             pointer-events-none
             absolute inset-x-0 bottom-0 z-10
             h-32
-            bg-gradient-to-t
+            bg-linear-to-t
             from-black/35
             via-black/10
             to-transparent
@@ -180,7 +180,7 @@ export default function ProductCard({ locale, product }: ProductCardProps) {
         {/* Product Name */}
         <h3
           className="
-            min-h-[52px]
+            min-h-13
             text-base font-bold
             leading-7
             text-[#171717]

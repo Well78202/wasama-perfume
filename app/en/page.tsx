@@ -1,4 +1,3 @@
-
 import type { Metadata } from "next";
 
 import SiteLayout from "../components/layout/SiteLayout";
@@ -11,11 +10,11 @@ import NewArrivals from "../components/home/NewArrivals";
 import Features from "../components/home/Features";
 import Contact from "../components/home/Contact";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Luxury Perfume Store",
 
-  description:
-    "Discover Wasama Perfume's curated collection of men's and women's fragrances.",
+  description: "Discover Wasama Perfume's curated collection of men's and women's fragrances.",
 
   alternates: {
     canonical: "/en",

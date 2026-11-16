@@ -1,19 +1,10 @@
-
 "use client";
 
 import { useActionState } from "react";
 import Link from "next/link";
-import {
-  Save,
-  ArrowRight,
-  PackagePlus,
-} from "lucide-react";
+import { Save, ArrowRight, PackagePlus } from "lucide-react";
 
-import {
-  createProduct,
-  updateProduct,
-  type ProductFormState,
-} from "./actions";
+import { createProduct, updateProduct, type ProductFormState } from "./actions";
 
 import ProductImages from "./ProductImages";
 
@@ -30,6 +21,10 @@ export type EditableProduct = {
   sku: string | null;
   descriptionAr: string | null;
   descriptionEn: string | null;
+  metaTitleAr: string | null;
+  metaTitleEn: string | null;
+  metaDescriptionAr: string | null;
+  metaDescriptionEn: string | null;
   price: string;
   oldPrice: string | null;
   stock: number;
@@ -54,28 +49,15 @@ const initialState: ProductFormState = {
 const inputClass =
   "mt-2 h-12 w-full min-w-0 rounded-xl border border-neutral-200 bg-[#faf9f7] px-4 text-sm outline-none transition focus:border-[#a66d36]";
 
-const labelClass =
-  "block min-w-0 text-sm font-bold text-[#171411]";
+const labelClass = "block min-w-0 text-sm font-bold text-[#171411]";
 
-export default function ProductForm({
-  categories,
-  brands,
-  product,
-}: Props) {
-  const action = product
-    ? updateProduct.bind(null, product.id)
-    : createProduct;
+export default function ProductForm({ categories, brands, product }: Props) {
+  const action = product ? updateProduct.bind(null, product.id) : createProduct;
 
-  const [state, formAction, pending] = useActionState(
-    action,
-    initialState
-  );
+  const [state, formAction, pending] = useActionState(action, initialState);
 
   return (
-    <main
-      dir="rtl"
-      className="mx-auto max-w-4xl pb-24 sm:pb-8"
-    >
+    <main dir="rtl" className="mx-auto max-w-4xl pb-24 sm:pb-8">
       {/* Page Header */}
       <div className="mb-7">
         <Link
@@ -92,28 +74,17 @@ export default function ProductForm({
           </div>
 
           <div>
-            <h1 className="text-2xl font-extrabold sm:text-3xl">
-              {product
-                ? "تعديل المنتج"
-                : "إضافة منتج جديد"}
-            </h1>
+            <h1 className="text-2xl font-extrabold sm:text-3xl">{product ? "تعديل المنتج" : "إضافة منتج جديد"}</h1>
 
-            <p className="mt-1 text-xs text-neutral-500">
-              أدخل بيانات المنتج بالعربي والإنجليزي
-            </p>
+            <p className="mt-1 text-xs text-neutral-500">أدخل بيانات المنتج بالعربي والإنجليزي</p>
           </div>
         </div>
       </div>
 
-      <form
-        action={formAction}
-        className="space-y-5"
-      >
+      <form action={formAction} className="space-y-5">
         {/* Basic Information */}
         <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
-          <h2 className="mb-6 text-lg font-extrabold">
-            المعلومات الأساسية
-          </h2>
+          <h2 className="mb-6 text-lg font-extrabold">المعلومات الأساسية</h2>
 
           <div className="grid gap-5 sm:grid-cols-2">
             <label className={labelClass}>
@@ -170,9 +141,7 @@ export default function ProductForm({
               <textarea
                 name="descriptionAr"
                 rows={4}
-                defaultValue={
-                  product?.descriptionAr ?? ""
-                }
+                defaultValue={product?.descriptionAr ?? ""}
                 className={`${inputClass} h-auto min-h-28 py-3`}
                 placeholder="اكتب وصف المنتج بالعربي..."
               />
@@ -184,9 +153,7 @@ export default function ProductForm({
                 name="descriptionEn"
                 rows={4}
                 dir="ltr"
-                defaultValue={
-                  product?.descriptionEn ?? ""
-                }
+                defaultValue={product?.descriptionEn ?? ""}
                 className={`${inputClass} h-auto min-h-28 py-3`}
                 placeholder="Product description..."
               />
@@ -194,11 +161,75 @@ export default function ProductForm({
           </div>
         </section>
 
+        {/* SEO Settings */}
+        <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
+          <div className="mb-6">
+            <h2 className="text-lg font-extrabold">تحسين محركات البحث SEO</h2>
+            <p className="mt-1 text-xs text-neutral-500">إعدادات ظهور المنتج في نتائج بحث Google بالعربي والإنجليزي</p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div className="space-y-4">
+              <h3 className="font-bold text-[#a66d36]">SEO بالعربي</h3>
+
+              <label className={labelClass}>
+                عنوان SEO بالعربي
+                <input
+                  name="metaTitleAr"
+                  maxLength={255}
+                  defaultValue={product?.metaTitleAr ?? ""}
+                  className={inputClass}
+                  placeholder="عطر جوتشي بامبو | وسامة برفيوم"
+                />
+              </label>
+
+              <label className={labelClass}>
+                وصف Meta بالعربي
+                <textarea
+                  name="metaDescriptionAr"
+                  rows={4}
+                  maxLength={500}
+                  defaultValue={product?.metaDescriptionAr ?? ""}
+                  className={`${inputClass} h-auto py-3`}
+                  placeholder="وصف مختصر وجذاب للمنتج..."
+                />
+              </label>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="font-bold text-[#a66d36]">English SEO</h3>
+
+              <label className={labelClass}>
+                English SEO Title
+                <input
+                  name="metaTitleEn"
+                  dir="ltr"
+                  maxLength={255}
+                  defaultValue={product?.metaTitleEn ?? ""}
+                  className={inputClass}
+                  placeholder="Gucci Bamboo | Wasama Perfume"
+                />
+              </label>
+
+              <label className={labelClass}>
+                English Meta Description
+                <textarea
+                  name="metaDescriptionEn"
+                  rows={4}
+                  dir="ltr"
+                  maxLength={500}
+                  defaultValue={product?.metaDescriptionEn ?? ""}
+                  className={`${inputClass} h-auto py-3`}
+                  placeholder="Discover this fragrance..."
+                />
+              </label>
+            </div>
+          </div>
+        </section>
+
         {/* Price and Stock */}
         <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
-          <h2 className="mb-6 text-lg font-extrabold">
-            السعر والمخزون
-          </h2>
+          <h2 className="mb-6 text-lg font-extrabold">السعر والمخزون</h2>
 
           <div className="grid gap-5 sm:grid-cols-3">
             <label className={labelClass}>
@@ -226,9 +257,7 @@ export default function ProductForm({
                 max="99999999.99"
                 step="0.01"
                 dir="ltr"
-                defaultValue={
-                  product?.oldPrice ?? ""
-                }
+                defaultValue={product?.oldPrice ?? ""}
                 className={inputClass}
                 placeholder="650"
               />
@@ -252,30 +281,16 @@ export default function ProductForm({
 
         {/* Category and Brand */}
         <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
-          <h2 className="mb-6 text-lg font-extrabold">
-            التصنيف والبراند
-          </h2>
+          <h2 className="mb-6 text-lg font-extrabold">التصنيف والبراند</h2>
 
           <div className="grid gap-5 sm:grid-cols-2">
             <label className={labelClass}>
               التصنيف *
-              <select
-                name="categoryId"
-                required
-                defaultValue={
-                  product?.categoryId ?? ""
-                }
-                className={inputClass}
-              >
-                <option value="">
-                  اختر التصنيف
-                </option>
+              <select name="categoryId" required defaultValue={product?.categoryId ?? ""} className={inputClass}>
+                <option value="">اختر التصنيف</option>
 
                 {categories.map((category) => (
-                  <option
-                    key={category.id}
-                    value={category.id}
-                  >
+                  <option key={category.id} value={category.id}>
                     {category.nameAr}
                   </option>
                 ))}
@@ -284,22 +299,11 @@ export default function ProductForm({
 
             <label className={labelClass}>
               البراند
-              <select
-                name="brandId"
-                defaultValue={
-                  product?.brandId ?? ""
-                }
-                className={inputClass}
-              >
-                <option value="">
-                  بدون براند
-                </option>
+              <select name="brandId" defaultValue={product?.brandId ?? ""} className={inputClass}>
+                <option value="">بدون براند</option>
 
                 {brands.map((brand) => (
-                  <option
-                    key={brand.id}
-                    value={brand.id}
-                  >
+                  <option key={brand.id} value={brand.id}>
                     {brand.nameAr}
                   </option>
                 ))}
@@ -309,44 +313,31 @@ export default function ProductForm({
         </section>
 
         {/* Product Images */}
-        <ProductImages
-          initialImages={
-            product?.imageUrls ?? []
-          }
-        />
+        <ProductImages initialImages={product?.imageUrls ?? []} />
 
         {/* Display Settings */}
         <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
-          <h2 className="mb-5 text-lg font-extrabold">
-            إعدادات العرض
-          </h2>
+          <h2 className="mb-5 text-lg font-extrabold">إعدادات العرض</h2>
 
           <div className="space-y-5">
             {[
               {
                 name: "isActive",
-                label:
-                  "المنتج نشط ويظهر في المتجر",
-                checked:
-                  product?.isActive ?? true,
+                label: "المنتج نشط ويظهر في المتجر",
+                checked: product?.isActive ?? true,
               },
               {
                 name: "isFeatured",
                 label: "منتج مميز",
-                checked:
-                  product?.isFeatured ?? false,
+                checked: product?.isFeatured ?? false,
               },
               {
                 name: "isBestSeller",
                 label: "الأكثر مبيعًا",
-                checked:
-                  product?.isBestSeller ?? false,
+                checked: product?.isBestSeller ?? false,
               },
             ].map((item) => (
-              <label
-                key={item.name}
-                className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-bold"
-              >
+              <label key={item.name} className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-bold">
                 <input
                   type="checkbox"
                   name={item.name}
@@ -362,10 +353,7 @@ export default function ProductForm({
 
         {/* Errors */}
         {state.error && (
-          <p
-            role="alert"
-            className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700"
-          >
+          <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">
             {state.error}
           </p>
         )}
@@ -374,22 +362,12 @@ export default function ProductForm({
         <div className="sticky bottom-0 z-10 -mx-4 border-t border-black/10 bg-[#f7f5f1]/95 px-4 py-3 backdrop-blur-sm sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0">
           <button
             type="submit"
-            disabled={
-              pending ||
-              categories.length === 0
-            }
+            disabled={pending || categories.length === 0}
             className="flex min-h-13 w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-[#171411] px-6 font-bold text-white transition hover:bg-[#352b23] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
-            <Save
-              size={19}
-              className="text-[#d5a86e]"
-            />
+            <Save size={19} className="text-[#d5a86e]" />
 
-            {pending
-              ? "جاري الحفظ..."
-              : product
-                ? "حفظ التعديلات"
-                : "إضافة المنتج"}
+            {pending ? "جاري الحفظ..." : product ? "حفظ التعديلات" : "إضافة المنتج"}
           </button>
         </div>
       </form>

@@ -1,5 +1,6 @@
 
 import type { Metadata } from "next";
+
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
 import ProductForm from "../ProductForm";
@@ -12,13 +13,19 @@ export const metadata: Metadata = {
   },
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function NewProductPage() {
   await requireAdmin();
 
   const [categories, brands] = await Promise.all([
     prisma.category.findMany({
-      where: { isActive: true },
-      orderBy: { nameAr: "asc" },
+      where: {
+        isActive: true,
+      },
+      orderBy: {
+        nameAr: "asc",
+      },
       select: {
         id: true,
         nameAr: true,
@@ -26,8 +33,12 @@ export default async function NewProductPage() {
     }),
 
     prisma.brand.findMany({
-      where: { isActive: true },
-      orderBy: { nameAr: "asc" },
+      where: {
+        isActive: true,
+      },
+      orderBy: {
+        nameAr: "asc",
+      },
       select: {
         id: true,
         nameAr: true,

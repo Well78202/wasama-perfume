@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import { auth } from "@/auth";
@@ -8,21 +7,14 @@ export const runtime = "nodejs";
 
 const MAX_SIZE = 5 * 1024 * 1024;
 
-const allowedTypes = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-]);
+const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export async function POST(request: Request) {
   const session = await auth();
   const adminId = session?.user?.id;
 
   if (!adminId) {
-    return NextResponse.json(
-      { error: "غير مصرح" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
   const admin = await prisma.admin.findUnique({
@@ -31,59 +23,39 @@ export async function POST(request: Request) {
   });
 
   if (!admin) {
-    return NextResponse.json(
-      { error: "غير مصرح" },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "غير مصرح" }, { status: 401 });
   }
 
-  if (
-    !process.env.CLOUDINARY_CLOUD_NAME ||
-    !process.env.CLOUDINARY_API_KEY ||
-    !process.env.CLOUDINARY_API_SECRET
-  ) {
-    return NextResponse.json(
-      { error: "إعدادات تخزين الصور غير مكتملة" },
-      { status: 500 }
-    );
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+    return NextResponse.json({ error: "إعدادات تخزين الصور غير مكتملة" }, { status: 500 });
   }
 
   try {
     const formData = await request.formData();
     const file = formData.get("file");
 
-    if (!(file instanceof File)) {
-      return NextResponse.json(
-        { error: "اختار صورة صحيحة" },
-        { status: 400 }
-      );
+    if (
+      request.headers.has("content-length") &&
+      Number(request.headers.get("content-length")) > MAX_SIZE + 1024 * 1024
+    ) {
+      return NextResponse.json({ error: "حجم الطلب أكبر من المسموح" }, { status: 413 });
     }
 
-    if (
-      !allowedTypes.has(file.type) ||
-      file.size > MAX_SIZE ||
-      file.size === 0
-    ) {
-      return NextResponse.json(
-        { error: "مسموح JPG وPNG وWEBP حتى 5 ميجابايت" },
-        { status: 400 }
-      );
+    if (!(file instanceof File)) {
+      return NextResponse.json({ error: "اختار صورة صحيحة" }, { status: 400 });
+    }
+
+    if (!allowedTypes.has(file.type) || file.size > MAX_SIZE || file.size === 0) {
+      return NextResponse.json({ error: "مسموح JPG وPNG وWEBP حتى 5 ميجابايت" }, { status: 400 });
     }
 
     const bytes = Buffer.from(await file.arrayBuffer());
 
     // Validate file signature, not just the browser MIME type.
-    const isJpeg =
-      file.type === "image/jpeg" &&
-      bytes[0] === 0xff &&
-      bytes[1] === 0xd8 &&
-      bytes[2] === 0xff;
+    const isJpeg = file.type === "image/jpeg" && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
 
     const isPng =
-      file.type === "image/png" &&
-      bytes.subarray(0, 8).equals(
-        Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])
-      );
+      file.type === "image/png" && bytes.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
 
     const isWebp =
       file.type === "image/webp" &&
@@ -91,10 +63,7 @@ export async function POST(request: Request) {
       bytes.toString("ascii", 8, 12) === "WEBP";
 
     if (!isJpeg && !isPng && !isWebp) {
-      return NextResponse.json(
-        { error: "ملف الصورة غير صالح" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "ملف الصورة غير صالح" }, { status: 400 });
     }
 
     cloudinary.config({
@@ -120,7 +89,7 @@ export async function POST(request: Request) {
           }
 
           resolve(result);
-        }
+        },
       );
 
       stream.end(bytes);
@@ -132,9 +101,6 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Image upload error:", error);
 
-    return NextResponse.json(
-      { error: "فشل رفع الصورة" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "فشل رفع الصورة" }, { status: 500 });
   }
 }

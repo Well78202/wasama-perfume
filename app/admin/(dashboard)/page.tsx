@@ -52,13 +52,7 @@ const dateTime = (date: Date) =>
     timeZone: "Africa/Cairo",
   }).format(date);
 
-function StatePill({
-  value,
-  kind,
-}: {
-  value: string;
-  kind: "payment" | "order";
-}) {
+function StatePill({ value, kind }: { value: string; kind: "payment" | "order" }) {
   const success = ["PAID", "DELIVERED", "CONFIRMED"].includes(value);
   const danger = ["REJECTED", "CANCELLED"].includes(value);
   const label = kind === "payment" ? paymentLabels[value] : statusLabels[value];
@@ -66,11 +60,7 @@ function StatePill({
   return (
     <span
       className={`inline-flex rounded-full px-2.5 py-1 text-xs font-bold ${
-        success
-          ? "bg-emerald-50 text-emerald-700"
-          : danger
-            ? "bg-red-50 text-red-700"
-            : "bg-amber-50 text-amber-700"
+        success ? "bg-emerald-50 text-emerald-700" : danger ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700"
       }`}
     >
       {label ?? value}
@@ -195,16 +185,12 @@ export default async function AdminPage() {
   ];
 
   return (
-    <main dir="rtl" className="mx-auto max-w-[1400px] space-y-7 pb-12 sm:space-y-8">
+    <main dir="rtl" className="mx-auto max-w-350 space-y-7 pb-12 sm:space-y-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-bold text-[#a66d36]">WASAMA PERFUME</p>
-          <h1 className="mt-2 text-2xl font-extrabold text-[#171411] sm:text-3xl">
-            أهلاً بيك في لوحة التحكم
-          </h1>
-          <p className="mt-2 text-sm text-neutral-500">
-            تابع المبيعات والطلبات والمخزون من مكان واحد.
-          </p>
+          <h1 className="mt-2 text-2xl font-extrabold text-[#171411] sm:text-3xl">أهلاً بيك في لوحة التحكم</h1>
+          <p className="mt-2 text-sm text-neutral-500">تابع المبيعات والطلبات والمخزون من مكان واحد.</p>
           <p dir="ltr" className="mt-2 text-right text-xs text-neutral-400">
             {admin.email}
           </p>
@@ -221,7 +207,7 @@ export default async function AdminPage() {
                 <Icon size={20} />
               </div>
               <p className="mt-5 text-xs leading-5 text-neutral-500 sm:text-sm">{stat.label}</p>
-              <p className="mt-2 break-words text-lg font-extrabold text-[#171411] sm:text-2xl">{stat.value}</p>
+              <p className="mt-2 wrap-break-word text-lg font-extrabold text-[#171411] sm:text-2xl">{stat.value}</p>
               <p className="mt-2 text-xs text-neutral-400">{stat.description}</p>
             </div>
           );
@@ -232,12 +218,18 @@ export default async function AdminPage() {
         {operations.map((item) => {
           const Icon = item.icon;
           return (
-            <Link key={item.label} href={item.href} className="flex min-w-0 items-center gap-3 rounded-2xl border border-black/5 bg-white p-4 transition hover:border-[#d8b78e] hover:shadow-sm">
+            <Link
+              key={item.label}
+              href={item.href}
+              className="flex min-w-0 items-center gap-3 rounded-2xl border border-black/5 bg-white p-4 transition hover:border-[#d8b78e] hover:shadow-sm"
+            >
               <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#fff6eb] text-[#a66d36]">
                 <Icon size={20} />
               </span>
               <span className="min-w-0">
-                <span className="block text-xl font-extrabold text-[#171411]">{item.value.toLocaleString("ar-EG")}</span>
+                <span className="block text-xl font-extrabold text-[#171411]">
+                  {item.value.toLocaleString("ar-EG")}
+                </span>
                 <span className="block text-xs leading-5 text-neutral-500">{item.label}</span>
               </span>
             </Link>
@@ -246,13 +238,17 @@ export default async function AdminPage() {
       </section>
 
       {(outOfStockCount > 0 || lowStockCount > 0) && (
-        <Link href="/admin/products" className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 transition hover:bg-amber-100">
+        <Link
+          href="/admin/products"
+          className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 transition hover:bg-amber-100"
+        >
           <div className="flex items-center gap-3">
             <AlertTriangle className="shrink-0 text-amber-700" size={22} />
             <div>
               <p className="font-extrabold text-amber-950">تنبيه المخزون</p>
               <p className="mt-1 text-sm text-amber-800">
-                {outOfStockCount.toLocaleString("ar-EG")} منتج نفد من المخزون، و{lowStockCount.toLocaleString("ar-EG")} منتج متبقي منه 1 إلى 5 قطع.
+                {outOfStockCount.toLocaleString("ar-EG")} منتج نفد من المخزون، و{lowStockCount.toLocaleString("ar-EG")}{" "}
+                منتج متبقي منه 1 إلى 5 قطع.
               </p>
             </div>
           </div>
@@ -265,20 +261,44 @@ export default async function AdminPage() {
       <section className="rounded-2xl border border-black/5 bg-white p-5 sm:p-6">
         <h2 className="text-lg font-extrabold text-[#171411]">إجراءات سريعة</h2>
         <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <Link href="/admin/products/new" className="flex min-h-14 items-center justify-between rounded-xl bg-[#171411] px-4 font-bold text-white transition hover:bg-[#352b23]">
-            <span className="flex items-center gap-2"><Plus size={19} className="text-[#d5a86e]" />إضافة منتج</span>
+          <Link
+            href="/admin/products/new"
+            className="flex min-h-14 items-center justify-between rounded-xl bg-[#171411] px-4 font-bold text-white transition hover:bg-[#352b23]"
+          >
+            <span className="flex items-center gap-2">
+              <Plus size={19} className="text-[#d5a86e]" />
+              إضافة منتج
+            </span>
             <ArrowUpLeft size={17} />
           </Link>
-          <Link href="/admin/orders" className="flex min-h-14 items-center justify-between rounded-xl border border-[#e5d8c8] bg-[#fffaf3] px-4 font-bold transition hover:bg-[#f7efe4]">
-            <span className="flex items-center gap-2"><ShoppingBag size={19} className="text-[#a66d36]" />إدارة الطلبات</span>
+          <Link
+            href="/admin/orders"
+            className="flex min-h-14 items-center justify-between rounded-xl border border-[#e5d8c8] bg-[#fffaf3] px-4 font-bold transition hover:bg-[#f7efe4]"
+          >
+            <span className="flex items-center gap-2">
+              <ShoppingBag size={19} className="text-[#a66d36]" />
+              إدارة الطلبات
+            </span>
             <ArrowUpLeft size={17} />
           </Link>
-          <Link href="/admin/shipping" className="flex min-h-14 items-center justify-between rounded-xl border border-[#e5d8c8] bg-[#fffaf3] px-4 font-bold transition hover:bg-[#f7efe4]">
-            <span className="flex items-center gap-2"><Truck size={19} className="text-[#a66d36]" />أسعار الشحن</span>
+          <Link
+            href="/admin/shipping"
+            className="flex min-h-14 items-center justify-between rounded-xl border border-[#e5d8c8] bg-[#fffaf3] px-4 font-bold transition hover:bg-[#f7efe4]"
+          >
+            <span className="flex items-center gap-2">
+              <Truck size={19} className="text-[#a66d36]" />
+              أسعار الشحن
+            </span>
             <ArrowUpLeft size={17} />
           </Link>
-          <Link href="/admin/categories" className="flex min-h-14 items-center justify-between rounded-xl border border-[#e5d8c8] bg-[#fffaf3] px-4 font-bold transition hover:bg-[#f7efe4]">
-            <span className="flex items-center gap-2"><Tags size={19} className="text-[#a66d36]" />التصنيفات</span>
+          <Link
+            href="/admin/categories"
+            className="flex min-h-14 items-center justify-between rounded-xl border border-[#e5d8c8] bg-[#fffaf3] px-4 font-bold transition hover:bg-[#f7efe4]"
+          >
+            <span className="flex items-center gap-2">
+              <Tags size={19} className="text-[#a66d36]" />
+              التصنيفات
+            </span>
             <ArrowUpLeft size={17} />
           </Link>
         </div>
@@ -291,7 +311,10 @@ export default async function AdminPage() {
               <h2 className="text-lg font-extrabold">أحدث الطلبات</h2>
               <p className="mt-1 text-xs text-neutral-500">آخر 6 طلبات مسجلة</p>
             </div>
-            <Link href="/admin/orders" className="flex items-center gap-1 text-sm font-bold text-[#a66d36] hover:underline">
+            <Link
+              href="/admin/orders"
+              className="flex items-center gap-1 text-sm font-bold text-[#a66d36] hover:underline"
+            >
               عرض الكل <ArrowLeft size={16} />
             </Link>
           </div>
@@ -303,7 +326,7 @@ export default async function AdminPage() {
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[650px] text-right text-sm">
+              <table className="w-full min-w-162.5 text-right text-sm">
                 <thead className="bg-[#fcfaf7] text-xs text-neutral-500">
                   <tr>
                     <th className="px-5 py-3 font-bold">رقم الطلب</th>
@@ -317,19 +340,29 @@ export default async function AdminPage() {
                   {recentOrders.map((order) => (
                     <tr key={order.id} className="transition hover:bg-[#fffaf3]">
                       <td className="px-5 py-4">
-                        <p dir="ltr" className="text-right font-extrabold">#{order.orderNumber}</p>
+                        <p dir="ltr" className="text-right font-extrabold">
+                          #{order.orderNumber}
+                        </p>
                         <p className="mt-1 whitespace-nowrap text-xs text-neutral-400">{dateTime(order.createdAt)}</p>
                       </td>
                       <td className="px-5 py-4 font-semibold">{order.customerName}</td>
                       <td className="whitespace-nowrap px-5 py-4 font-bold">{money(Number(order.total))}</td>
-                      <td className="px-5 py-4"><StatePill value={order.paymentStatus} kind="payment" /></td>
-                      <td className="px-5 py-4"><StatePill value={order.status} kind="order" /></td>
+                      <td className="px-5 py-4">
+                        <StatePill value={order.paymentStatus} kind="payment" />
+                      </td>
+                      <td className="px-5 py-4">
+                        <StatePill value={order.status} kind="order" />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
               <div className="border-t border-black/5 px-5 py-3 text-xs text-neutral-500">
-                لإدارة أي طلب افتح <Link href="/admin/orders" className="font-bold text-[#a66d36] underline">صفحة الطلبات</Link>.
+                لإدارة أي طلب افتح{" "}
+                <Link href="/admin/orders" className="font-bold text-[#a66d36] underline">
+                  صفحة الطلبات
+                </Link>
+                .
               </div>
             </div>
           )}
@@ -350,7 +383,9 @@ export default async function AdminPage() {
               <div className="divide-y divide-black/5">
                 {bestSelling.map((item, index) => (
                   <div key={`${item.productId}-${item.productName}`} className="flex items-center gap-3 p-4">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f7efe4] font-extrabold text-[#a66d36]">{index + 1}</span>
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f7efe4] font-extrabold text-[#a66d36]">
+                      {index + 1}
+                    </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-bold">{item.productName}</p>
                       <p className="mt-1 text-xs text-neutral-500">{money(Number(item._sum.total ?? 0))}</p>
@@ -371,7 +406,9 @@ export default async function AdminPage() {
                 <AlertTriangle size={19} className="text-[#a66d36]" />
                 <h2 className="text-lg font-extrabold">منتجات تحتاج مخزون</h2>
               </div>
-              <Link href="/admin/products" className="text-xs font-bold text-[#a66d36] hover:underline">المنتجات</Link>
+              <Link href="/admin/products" className="text-xs font-bold text-[#a66d36] hover:underline">
+                المنتجات
+              </Link>
             </div>
             {lowStockProducts.length === 0 ? (
               <p className="p-7 text-center text-sm text-neutral-500">لا توجد منتجات نشطة بمخزون منخفض.</p>
@@ -380,7 +417,9 @@ export default async function AdminPage() {
                 {lowStockProducts.map((product) => (
                   <div key={product.id} className="flex items-center justify-between gap-3 px-5 py-3">
                     <p className="min-w-0 truncate text-sm font-bold">{product.nameAr}</p>
-                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${product.stock <= 0 ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700"}`}>
+                    <span
+                      className={`shrink-0 rounded-full px-2.5 py-1 text-xs font-bold ${product.stock <= 0 ? "bg-red-50 text-red-700" : "bg-amber-50 text-amber-700"}`}
+                    >
                       {product.stock <= 0 ? "نفد" : `${product.stock.toLocaleString("ar-EG")} متبقي`}
                     </span>
                   </div>

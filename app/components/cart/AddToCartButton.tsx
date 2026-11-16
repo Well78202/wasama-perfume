@@ -35,7 +35,7 @@ export default function AddToCartButton({
       onClick={handleAdd}
       disabled={disabled}
       className="
-        mt-4 flex min-h-13 w-full
+        mt-0 flex min-h-13 w-full
         items-center justify-center gap-2.5
         rounded-lg bg-[#171717] px-5
         text-sm font-bold text-white

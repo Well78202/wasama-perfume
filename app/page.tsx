@@ -1,4 +1,3 @@
-
 import SiteLayout from "./components/layout/SiteLayout";
 
 import Hero from "./components/home/Hero";
@@ -14,8 +13,8 @@ export default function HomePage() {
     <SiteLayout locale="ar">
       <main>
         <Hero locale="ar" />
-        <Categories locale="ar" />
         <BestSellers locale="ar" />
+        <Categories locale="ar" />
         <Collections locale="ar" />
         <NewArrivals locale="ar" />
         <Features locale="ar" />

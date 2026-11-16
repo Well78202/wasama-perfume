@@ -1,4 +1,3 @@
-
 import ProductFilters from "@/app/components/product/ProductFilters";
 import ProductCard from "@/app/components/product/ProductCard";
 import ProductSearch from "@/app/components/product/ProductSearch";
@@ -23,13 +22,7 @@ export default async function ProductsPageContent({
   const isArabic = locale === "ar";
   const searchQuery = query.trim().slice(0, 100);
 
-  const selectedSort = [
-    "newest",
-    "price-asc",
-    "price-desc",
-  ].includes(sort)
-    ? sort
-    : "newest";
+  const selectedSort = ["newest", "price-asc", "price-desc"].includes(sort) ? sort : "newest";
 
   const [brands, categories, products] = await Promise.all([
     prisma.brand.findMany({
@@ -150,9 +143,7 @@ export default async function ProductsPageContent({
             {isArabic ? "وسامة برفيوم" : "WASAMA PERFUME"}
           </p>
 
-          <h1 className="text-4xl font-extrabold sm:text-5xl lg:text-6xl">
-            {isArabic ? "كل العطور" : "All Perfumes"}
-          </h1>
+          <h1 className="text-4xl font-extrabold sm:text-5xl lg:text-6xl">{isArabic ? "كل العطور" : "All Perfumes"}</h1>
 
           <p className="mx-auto mt-5 max-w-xl leading-7 text-white/60">
             {isArabic
@@ -167,16 +158,11 @@ export default async function ProductsPageContent({
         <div className="mx-auto max-w-360 px-5 lg:px-8">
           {/* SEARCH */}
           <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <ProductSearch
-              locale={locale}
-              initialQuery={searchQuery}
-            />
+            <ProductSearch locale={locale} initialQuery={searchQuery} />
 
             <p className="shrink-0 text-sm text-neutral-500">
               {isArabic ? "عدد المنتجات:" : "Products:"}{" "}
-              <span className="font-bold text-[#171411]">
-                {products.length}
-              </span>
+              <span className="font-bold text-[#171411]">{products.length}</span>
             </p>
           </div>
 
@@ -194,50 +180,34 @@ export default async function ProductsPageContent({
           {searchQuery && (
             <div className="mb-8 border-b border-black/10 pb-5">
               <p className="text-sm text-neutral-600">
-                {isArabic
-                  ? "نتائج البحث عن:"
-                  : "Search results for:"}{" "}
-                <span className="font-bold text-[#171411]">
-                  {searchQuery}
-                </span>
+                {isArabic ? "نتائج البحث عن:" : "Search results for:"}{" "}
+                <span className="font-bold text-[#171411]">{searchQuery}</span>
               </p>
             </div>
           )}
 
           {/* PRODUCT GRID */}
           {products.length > 0 ? (
-            <div className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+              {" "}
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
                   locale={locale}
                   product={{
-                    name: isArabic
-                      ? product.nameAr
-                      : product.nameEn,
+                    name: isArabic ? product.nameAr : product.nameEn,
 
-                    brand: isArabic
-                      ? product.brand?.nameAr ?? ""
-                      : product.brand?.nameEn ?? "",
+                    brand: isArabic ? (product.brand?.nameAr ?? "") : (product.brand?.nameEn ?? ""),
 
                     slug: product.slug,
 
-                    image:
-                      product.images[0]?.url ??
-                      "/images/products/placeholder.jpg",
+                    image: product.images[0]?.url ?? "/images/products/placeholder.jpg",
 
                     price: Number(product.price),
 
-                    oldPrice:
-                      product.oldPrice !== null
-                        ? Number(product.oldPrice)
-                        : undefined,
+                    oldPrice: product.oldPrice !== null ? Number(product.oldPrice) : undefined,
 
-                    badge: product.isBestSeller
-                      ? isArabic
-                        ? "الأكثر مبيعًا"
-                        : "BEST SELLER"
-                      : undefined,
+                    badge: product.isBestSeller ? (isArabic ? "الأكثر مبيعًا" : "BEST SELLER") : undefined,
                   }}
                 />
               ))}

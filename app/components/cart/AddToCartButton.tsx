@@ -25,7 +25,12 @@ export default function AddToCartButton({
   function handleAdd() {
     if (disabled) return;
 
-    addToCart(slug, quantity);
+    const safeQuantity = Math.min(
+      99,
+      Math.max(1, Math.floor(Number(quantity) || 1))
+    );
+
+    addToCart(slug, safeQuantity);
     setAdded(true);
   }
 
@@ -46,12 +51,16 @@ export default function AddToCartButton({
         disabled:bg-neutral-300
       "
     >
-      {added ? <Check size={18} /> : <ShoppingBag size={18} />}
+      {added ? (
+        <Check size={18} />
+      ) : (
+        <ShoppingBag size={18} />
+      )}
 
       {disabled
         ? isArabic
-          ? "غير متوفر"
-          : "Out of Stock"
+          ? "غير متاح"
+          : "Unavailable"
         : added
           ? isArabic
             ? "تمت الإضافة للسلة"

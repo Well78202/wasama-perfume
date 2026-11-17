@@ -27,7 +27,7 @@ export default async function EditProductPage({
 
   const { id } = await params;
 
-  const [product, categories, brands] = await Promise.all([
+  const [product, categories] = await Promise.all([
     prisma.product.findUnique({
       where: { id },
       include: {
@@ -48,16 +48,6 @@ export default async function EditProductPage({
         nameAr: true,
       },
     }),
-
-    prisma.brand.findMany({
-      orderBy: {
-        nameAr: "asc",
-      },
-      select: {
-        id: true,
-        nameAr: true,
-      },
-    }),
   ]);
 
   if (!product) {
@@ -67,7 +57,6 @@ export default async function EditProductPage({
   return (
     <ProductForm
       categories={categories}
-      brands={brands}
       product={{
         id: product.id,
 
@@ -90,11 +79,9 @@ export default async function EditProductPage({
         // Pricing
         price: product.price.toString(),
         oldPrice: product.oldPrice?.toString() ?? null,
-        stock: product.stock,
 
-        // Category and brand
+        // Category
         categoryId: product.categoryId,
-        brandId: product.brandId,
 
         // Display settings
         isActive: product.isActive,

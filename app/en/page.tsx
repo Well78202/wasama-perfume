@@ -31,8 +31,8 @@ export default function EnglishHomePage() {
     <SiteLayout locale="en">
       <main>
         <Hero locale="en" />
-        <Categories locale="en" />
         <BestSellers locale="en" />
+        <Categories locale="en" />
         <Collections locale="en" />
         <NewArrivals locale="en" />
         <Features locale="en" />

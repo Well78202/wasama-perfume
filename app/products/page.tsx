@@ -9,11 +9,13 @@ export const metadata: Metadata = {
   title: "كل العطور | وسامة برفيوم",
   description:
     "تسوق مجموعة مختارة من العطور الرجالية والحريمية والشرقية من وسامة برفيوم.",
+
   alternates: {
     canonical: "/products",
     languages: {
       "ar-EG": "/products",
       en: "/en/products",
+      "x-default": "/products",
     },
   },
 };
@@ -21,7 +23,6 @@ export const metadata: Metadata = {
 type ProductsPageProps = {
   searchParams: Promise<{
     q?: string | string[];
-    brand?: string | string[];
     category?: string | string[];
     sort?: string | string[];
   }>;
@@ -33,10 +34,9 @@ export default async function ProductsPage({
   const params = await searchParams;
 
   const query =
-    typeof params.q === "string" ? params.q : "";
-
-  const brand =
-    typeof params.brand === "string" ? params.brand : "";
+    typeof params.q === "string"
+      ? params.q
+      : "";
 
   const category =
     typeof params.category === "string"
@@ -55,7 +55,6 @@ export default async function ProductsPage({
       <ProductsPageContent
         locale="ar"
         query={query}
-        brand={brand}
         category={category}
         sort={sort}
       />

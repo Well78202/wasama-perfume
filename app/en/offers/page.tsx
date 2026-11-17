@@ -8,8 +8,10 @@ import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   title: "Offers & Deals",
+
   description:
     "Discover special offers on selected men's, women's, and oriental fragrances at Wasama Perfume.",
+
   alternates: {
     canonical: "/en/offers",
     languages: {
@@ -21,6 +23,8 @@ export const metadata: Metadata = {
 };
 
 export default async function EnglishOffersPage() {
+  // ================= FETCH OFFERS CATEGORY =================
+
   const category = await prisma.category.findUnique({
     where: {
       slug: "offers",
@@ -45,8 +49,6 @@ export default async function EnglishOffersPage() {
         ],
 
         include: {
-          brand: true,
-
           images: {
             orderBy: {
               sortOrder: "asc",
@@ -65,7 +67,8 @@ export default async function EnglishOffersPage() {
   return (
     <SiteLayout locale="en">
       <main className="min-h-screen bg-[#fffaf3]">
-        {/* HERO */}
+        {/* ================= HERO ================= */}
+
         <section className="relative overflow-hidden bg-[#171411]">
           <div
             aria-hidden="true"
@@ -89,9 +92,12 @@ export default async function EnglishOffersPage() {
           </div>
         </section>
 
-        {/* PRODUCTS */}
+        {/* ================= PRODUCTS ================= */}
+
         <section className="py-14 sm:py-16 lg:py-20">
           <div className="mx-auto max-w-360 px-5 lg:px-8">
+            {/* PRODUCTS HEADING */}
+
             <div className="mb-10 flex items-end justify-between gap-5 border-b border-black/10 pb-5">
               <div>
                 <p className="text-xs font-bold tracking-[0.15em] text-[#a66d36]">
@@ -113,16 +119,16 @@ export default async function EnglishOffersPage() {
               </p>
             </div>
 
+            {/* ================= PRODUCTS GRID ================= */}
+
             {category.products.length > 0 ? (
-              <div className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-5 lg:gap-x-6 lg:gap-y-12">
                 {category.products.map((product) => (
                   <ProductCard
                     key={product.id}
                     locale="en"
                     product={{
                       name: product.nameEn,
-
-                      brand: product.brand?.nameEn ?? "",
 
                       slug: product.slug,
 
@@ -147,6 +153,8 @@ export default async function EnglishOffersPage() {
                 ))}
               </div>
             ) : (
+              /* ================= EMPTY STATE ================= */
+
               <div className="flex min-h-80 items-center justify-center rounded-2xl border border-[#e5d8c8] bg-[#f8f0e6] px-6 text-center">
                 <div>
                   <h2 className="text-xl font-extrabold text-[#171717]">

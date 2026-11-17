@@ -15,9 +15,14 @@ export type ProductFormState = {
 const moneyRegex = /^\d+(?:\.\d{1,2})?$/;
 const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
+// ============================================
+// IMAGE VALIDATION
+// ============================================
+
 function isValidImageUrl(value: string) {
   try {
     const url = new URL(value);
+
     const cloudName =
       process.env.CLOUDINARY_CLOUD_NAME ||
       process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
@@ -35,12 +40,15 @@ function isValidImageUrl(value: string) {
   }
 }
 
+// ============================================
+// PRODUCT VALIDATION SCHEMA
+// ============================================
+
 const productSchema = z.object({
   nameAr: z.string().trim().min(2),
   nameEn: z.string().trim().min(2),
 
   slug: z.string().trim().regex(slugRegex),
-
   sku: z.string().trim().max(100),
 
   descriptionAr: z.string().trim(),
@@ -55,10 +63,7 @@ const productSchema = z.object({
   price: z.string().regex(moneyRegex),
   oldPrice: z.string(),
 
-  stock: z.coerce.number().int().min(0),
-
   categoryId: z.string().min(1),
-  brandId: z.string(),
 
   imageUrls: z
     .array(
@@ -79,6 +84,10 @@ function optionalText(value: string) {
   return value || null;
 }
 
+// ============================================
+// READ PRODUCT FORM
+// ============================================
+
 function readProduct(formData: FormData) {
   const rawImages = String(
     formData.get("imageUrls") ?? ""
@@ -95,8 +104,8 @@ function readProduct(formData: FormData) {
   return productSchema.safeParse({
     nameAr: field("nameAr"),
     nameEn: field("nameEn"),
-    slug: field("slug").toLowerCase(),
 
+    slug: field("slug").toLowerCase(),
     sku: field("sku"),
 
     descriptionAr: field("descriptionAr"),
@@ -111,18 +120,20 @@ function readProduct(formData: FormData) {
     price: field("price"),
     oldPrice: field("oldPrice"),
 
-    stock: field("stock"),
-
     categoryId: field("categoryId"),
-    brandId: field("brandId"),
 
     imageUrls,
 
     isActive: formData.get("isActive") === "on",
     isFeatured: formData.get("isFeatured") === "on",
-    isBestSeller: formData.get("isBestSeller") === "on",
+    isBestSeller:
+      formData.get("isBestSeller") === "on",
   });
 }
+
+// ============================================
+// PRICE VALIDATION
+// ============================================
 
 function validatePrices(
   price: string,
@@ -142,32 +153,27 @@ function validatePrices(
   );
 }
 
-async function validateRelations(
-  categoryId: string,
-  brandId: string
-) {
-  const [category, brand] = await Promise.all([
-    prisma.category.findFirst({
-      where: {
-        id: categoryId,
-        isActive: true,
-      },
-      select: { id: true },
-    }),
+// ============================================
+// CATEGORY VALIDATION
+// ============================================
 
-    brandId
-      ? prisma.brand.findFirst({
-          where: {
-            id: brandId,
-            isActive: true,
-          },
-          select: { id: true },
-        })
-      : Promise.resolve(null),
-  ]);
+async function validateCategory(categoryId: string) {
+  const category = await prisma.category.findFirst({
+    where: {
+      id: categoryId,
+      isActive: true,
+    },
+    select: {
+      id: true,
+    },
+  });
 
-  return !!category && (!brandId || !!brand);
+  return Boolean(category);
 }
+
+// ============================================
+// PRODUCT DATABASE FIELDS
+// ============================================
 
 function productFields(data: ProductData) {
   return {
@@ -193,10 +199,7 @@ function productFields(data: ProductData) {
     price: data.price,
     oldPrice: optionalText(data.oldPrice),
 
-    stock: data.stock,
-
     categoryId: data.categoryId,
-    brandId: optionalText(data.brandId),
 
     isActive: data.isActive,
     isFeatured: data.isFeatured,
@@ -205,6 +208,10 @@ function productFields(data: ProductData) {
     updatedAt: new Date(),
   };
 }
+
+// ============================================
+// ERROR HANDLING
+// ============================================
 
 function friendlyError(
   error: unknown
@@ -236,6 +243,10 @@ function friendlyError(
   };
 }
 
+// ============================================
+// VALIDATE PRODUCT
+// ============================================
+
 async function validateProduct(
   formData: FormData
 ): Promise<
@@ -261,15 +272,10 @@ async function validateProduct(
     };
   }
 
-  if (
-    !(await validateRelations(
-      data.categoryId,
-      data.brandId
-    ))
-  ) {
+  if (!(await validateCategory(data.categoryId))) {
     return {
       success: false,
-      error: "اختر تصنيفًا وبراندًا صالحين.",
+      error: "اختر تصنيفًا صالحًا.",
     };
   }
 
@@ -279,7 +285,10 @@ async function validateProduct(
   };
 }
 
+// ============================================
 // CREATE PRODUCT
+// ============================================
+
 export async function createProduct(
   _state: ProductFormState,
   formData: FormData
@@ -319,7 +328,10 @@ export async function createProduct(
   redirect("/admin/products");
 }
 
+// ============================================
 // UPDATE PRODUCT
+// ============================================
+
 export async function updateProduct(
   id: string,
   _state: ProductFormState,
@@ -417,7 +429,10 @@ export async function updateProduct(
   redirect("/admin/products");
 }
 
+// ============================================
 // DELETE PRODUCT
+// ============================================
+
 export async function deleteProduct(
   productId: string
 ): Promise<{

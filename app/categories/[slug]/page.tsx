@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -12,6 +13,8 @@ type CategoryPageProps = {
   }>;
 };
 
+// ================= SEO METADATA =================
+
 export async function generateMetadata({
   params,
 }: CategoryPageProps): Promise<Metadata> {
@@ -24,22 +27,39 @@ export async function generateMetadata({
     select: {
       nameAr: true,
       descriptionAr: true,
+      isActive: true,
     },
   });
 
-  if (!category) {
+  if (!category || !category.isActive) {
     return {
       title: "التصنيف غير موجود",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
   return {
     title: category.nameAr,
+
     description:
       category.descriptionAr ??
       `تسوق ${category.nameAr} من وسامة برفيوم.`,
+
+    alternates: {
+      canonical: `/categories/${encodeURIComponent(slug)}`,
+      languages: {
+        "ar-EG": `/categories/${encodeURIComponent(slug)}`,
+        en: `/en/categories/${encodeURIComponent(slug)}`,
+        "x-default": `/categories/${encodeURIComponent(slug)}`,
+      },
+    },
   };
 }
+
+// ================= CATEGORY PAGE =================
 
 export default async function CategoryPage({
   params,
@@ -70,13 +90,10 @@ export default async function CategoryPage({
         ],
 
         include: {
-          brand: true,
-
           images: {
             orderBy: {
               sortOrder: "asc",
             },
-
             take: 1,
           },
         },
@@ -97,7 +114,6 @@ export default async function CategoryPage({
 
         <section className="relative overflow-hidden bg-[#171411]">
           {/* Decorative glow */}
-
           <div
             aria-hidden="true"
             className="
@@ -132,8 +148,7 @@ export default async function CategoryPage({
 
         <section className="py-14 sm:py-16 lg:py-20">
           <div className="mx-auto max-w-360 px-5 lg:px-8">
-            {/* Top Bar */}
-
+            {/* TOP BAR */}
             <div className="mb-10 flex items-end justify-between gap-5 border-b border-black/10 pb-5">
               <div>
                 <p className="text-xs font-bold tracking-[0.15em] text-[#a66d36]">
@@ -153,19 +168,15 @@ export default async function CategoryPage({
               </p>
             </div>
 
-            {/* Product Grid */}
-
+            {/* PRODUCT GRID */}
             {category.products.length > 0 ? (
-              <div className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-5 lg:gap-x-6 lg:gap-y-12">
                 {category.products.map((product) => (
                   <ProductCard
                     key={product.id}
                     locale="ar"
                     product={{
                       name: product.nameAr,
-
-                      brand:
-                        product.brand?.nameAr ?? "",
 
                       slug: product.slug,
 

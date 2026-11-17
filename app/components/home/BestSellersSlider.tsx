@@ -15,12 +15,11 @@ import "swiper/css";
 
 type ProductCardData = {
   name: string;
-  brand: string;
   slug: string;
   image: string;
   price: number;
   oldPrice?: number;
-  badge: string;
+  badge?: string;
 };
 
 type BestSellersSliderProps = {
@@ -60,11 +59,11 @@ export default function BestSellersSlider({
 
   return (
     <div className="relative w-full min-w-0">
+      {/* ================= SLIDER TOP BAR ================= */}
 
-      {/* Slider Top Bar */}
       <div className="mb-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="h-[2px] w-7 bg-[#a77c4b]" />
+          <span className="h-0.5 w-7 bg-[#a77c4b]" />
 
           <span className="text-[11px] font-bold tracking-[0.12em] text-[#a77c4b] sm:text-xs">
             {isArabic
@@ -73,14 +72,16 @@ export default function BestSellersSlider({
           </span>
         </div>
 
-        {/* Navigation */}
-        <div className="flex shrink-0 items-center gap-2">
+        {/* NAVIGATION */}
 
+        <div className="flex shrink-0 items-center gap-2">
           <button
             type="button"
             onClick={handlePrev}
             aria-label={
-              isArabic ? "المنتج السابق" : "Previous product"
+              isArabic
+                ? "المنتج السابق"
+                : "Previous product"
             }
             className="
               flex h-10 w-10 items-center justify-center
@@ -101,7 +102,9 @@ export default function BestSellersSlider({
             type="button"
             onClick={handleNext}
             aria-label={
-              isArabic ? "المنتج التالي" : "Next product"
+              isArabic
+                ? "المنتج التالي"
+                : "Next product"
             }
             className="
               flex h-10 w-10 items-center justify-center
@@ -120,7 +123,8 @@ export default function BestSellersSlider({
         </div>
       </div>
 
-      {/* Swiper */}
+      {/* ================= SWIPER ================= */}
+
       <Swiper
         key={locale}
         dir={isArabic ? "rtl" : "ltr"}
@@ -169,7 +173,7 @@ export default function BestSellersSlider({
         {safeProducts.map((product) => (
           <SwiperSlide
             key={product.slug}
-            className="!h-auto"
+            className="h-auto!"
           >
             <div className="h-full w-full min-w-0 pb-2">
               <ProductCard
@@ -181,15 +185,15 @@ export default function BestSellersSlider({
         ))}
       </Swiper>
 
-      {/* Progress Indicator */}
+      {/* ================= PROGRESS INDICATOR ================= */}
+
       {totalProducts > 1 && (
         <div className="mt-8 flex items-center justify-center gap-3">
-
           <span className="text-xs font-bold text-[#a77c4b]">
             {String(activeIndex + 1).padStart(2, "0")}
           </span>
 
-          <div className="h-[2px] w-24 overflow-hidden rounded-full bg-[#e8dfd4]">
+          <div className="h-0.5 w-24 overflow-hidden rounded-full bg-[#e8dfd4]">
             <div
               className="h-full bg-[#a77c4b] transition-all duration-500"
               style={{

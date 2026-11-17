@@ -1,17 +1,35 @@
 
 export const CART_KEY = "wasama-cart";
 
+const MAX_CART_QUANTITY = 99;
+
 export type CartItem = {
   slug: string;
   quantity: number;
 };
+
+// ================= QUANTITY VALIDATION =================
+
+function normalizeQuantity(quantity: number): number {
+  if (!Number.isFinite(quantity)) return 1;
+
+  return Math.min(
+    MAX_CART_QUANTITY,
+    Math.max(1, Math.trunc(quantity))
+  );
+}
+
+// ================= GET CART =================
 
 export function getCart(): CartItem[] {
   if (typeof window === "undefined") return [];
 
   try {
     const stored = localStorage.getItem(CART_KEY);
-    const parsed: unknown = stored ? JSON.parse(stored) : [];
+
+    const parsed: unknown = stored
+      ? JSON.parse(stored)
+      : [];
 
     if (!Array.isArray(parsed)) return [];
 
@@ -33,46 +51,73 @@ export function getCart(): CartItem[] {
       quantities.set(
         item.slug,
         Math.min(
-          99,
-          (quantities.get(item.slug) ?? 0) + item.quantity
+          MAX_CART_QUANTITY,
+          (quantities.get(item.slug) ?? 0) +
+            item.quantity
         )
       );
     }
 
-    return Array.from(quantities, ([slug, quantity]) => ({
-      slug,
-      quantity,
-    }));
+    return Array.from(
+      quantities,
+      ([slug, quantity]) => ({
+        slug,
+        quantity,
+      })
+    );
   } catch {
     return [];
   }
 }
 
+// ================= SAVE CART =================
+
 export function saveCart(items: CartItem[]) {
   if (typeof window === "undefined") return;
 
-  localStorage.setItem(CART_KEY, JSON.stringify(items));
-  window.dispatchEvent(new Event("cart-updated"));
+  localStorage.setItem(
+    CART_KEY,
+    JSON.stringify(items)
+  );
+
+  window.dispatchEvent(
+    new Event("cart-updated")
+  );
 }
 
-export function addToCart(slug: string, quantity = 1) {
+// ================= ADD TO CART =================
+
+export function addToCart(
+  slug: string,
+  quantity = 1
+) {
+  if (!slug.trim()) return;
+
   const cart = getCart();
-  const existing = cart.find((item) => item.slug === slug);
+
+  const validQuantity =
+    normalizeQuantity(quantity);
+
+  const existing = cart.find(
+    (item) => item.slug === slug
+  );
 
   if (existing) {
     existing.quantity = Math.min(
-      99,
-      existing.quantity + quantity
+      MAX_CART_QUANTITY,
+      existing.quantity + validQuantity
     );
   } else {
     cart.push({
       slug,
-      quantity: Math.min(99, Math.max(1, quantity)),
+      quantity: validQuantity,
     });
   }
 
   saveCart(cart);
 }
+
+// ================= UPDATE QUANTITY =================
 
 export function updateCartQuantity(
   slug: string,
@@ -80,23 +125,45 @@ export function updateCartQuantity(
 ) {
   const cart = getCart();
 
+  if (!Number.isFinite(quantity)) return;
+
   if (quantity <= 0) {
-    saveCart(cart.filter((item) => item.slug !== slug));
+    saveCart(
+      cart.filter(
+        (item) => item.slug !== slug
+      )
+    );
     return;
   }
+
+  const validQuantity =
+    normalizeQuantity(quantity);
 
   saveCart(
     cart.map((item) =>
       item.slug === slug
-        ? { ...item, quantity: Math.min(99, quantity) }
+        ? {
+            ...item,
+            quantity: validQuantity,
+          }
         : item
     )
   );
 }
 
-export function removeFromCart(slug: string) {
-  saveCart(getCart().filter((item) => item.slug !== slug));
+// ================= REMOVE ITEM =================
+
+export function removeFromCart(
+  slug: string
+) {
+  saveCart(
+    getCart().filter(
+      (item) => item.slug !== slug
+    )
+  );
 }
+
+// ================= CLEAR CART =================
 
 export function clearCart() {
   saveCart([]);

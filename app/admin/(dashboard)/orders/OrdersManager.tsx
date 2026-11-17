@@ -47,8 +47,6 @@ type Order = {
   itemCount: number;
   refundStatus: "NONE" | "PENDING" | "COMPLETED";
   refundNote: string | null;
-  stockDeductedAt: string | null;
-  stockRestoredAt: string | null;
   items: OrderItem[];
 };
 type Props = {
@@ -161,26 +159,46 @@ function OrderDetails({ order, onClose }: { order: Order; onClose: () => void })
     });
   };
   const requestRefund = () => {
-    setError(""); setMessage("");
-    if (!refundNote.trim()) { setError("اكتب سبب الاسترداد."); return; }
+    setError("");
+    setMessage("");
+    if (!refundNote.trim()) {
+      setError("اكتب سبب الاسترداد.");
+      return;
+    }
     startTransition(async () => {
       try {
         const result = await requestOrderRefund(order.id, refundNote);
-        if (!result.success) { setError(result.error ?? "تعذر طلب الاسترداد."); return; }
-        setMessage("تم تسجيل طلب الاسترداد. لا ترجع المخزون قبل رد المبلغ فعليًا."); router.refresh();
-      } catch { setError("حصل خطأ أثناء تسجيل الاسترداد."); }
+        if (!result.success) {
+          setError(result.error ?? "تعذر طلب الاسترداد.");
+          return;
+        }
+        setMessage("تم تسجيل طلب الاسترداد. تأكد من إعادة المبلغ للعميل قبل إتمام الاسترداد.");
+        router.refresh();
+      } catch {
+        setError("حصل خطأ أثناء تسجيل الاسترداد.");
+      }
     });
   };
 
   const completeRefund = () => {
-    setError(""); setMessage("");
-    if (!moneyReturned) { setError("أكد أولًا إن المبلغ رجع للعميل بالفعل."); return; }
+    setError("");
+    setMessage("");
+    if (!moneyReturned) {
+      setError("أكد أولًا إن المبلغ رجع للعميل بالفعل.");
+      return;
+    }
     startTransition(async () => {
       try {
         const result = await completeOrderRefund(order.id, moneyReturned);
-        if (!result.success) { setError(result.error ?? "تعذر إتمام الاسترداد."); return; }
-        setMessage("تم تسجيل الاسترداد وإرجاع المخزون وإلغاء الطلب."); router.refresh();
-      } catch { setError("حصل خطأ أثناء تأكيد الاسترداد."); }
+        if (!result.success) {
+          setError(result.error ?? "تعذر إتمام الاسترداد.");
+          return;
+        }
+        setMessage("تم تسجيل الاسترداد وإلغاء الطلب بنجاح.");
+        router.refresh();
+      } catch {
+        setError("حصل خطأ أثناء تأكيد الاسترداد.");
+      }
     });
   };
 
@@ -404,28 +422,68 @@ function OrderDetails({ order, onClose }: { order: Order; onClose: () => void })
         {/* Refund management: only before shipping */}
         {order.paymentStatus === "PAID" && (
           <section className="mt-4 rounded-xl border border-amber-200 bg-amber-50/40 p-4">
-            <h3 className="mb-3 font-extrabold">إدارة الاسترداد والمخزون</h3>
-            <p className="mb-3 text-sm">حالة الاسترداد: <strong>{order.refundStatus === "COMPLETED" ? "مكتمل" : order.refundStatus === "PENDING" ? "بانتظار إعادة المبلغ" : "لا يوجد استرداد"}</strong></p>
-            {order.refundStatus === "COMPLETED" && <p className="text-sm text-green-800">تم تسجيل إعادة المبلغ وإرجاع المخزون مرة واحدة.</p>}
-            {(!order.refundStatus || order.refundStatus === "NONE") && !["SHIPPED", "DELIVERED", "CANCELLED"].includes(order.status) && (
-              <>
-                <label className="block text-sm font-bold">سبب الاسترداد
-                  <textarea value={refundNote} onChange={(e) => setRefundNote(e.target.value)} maxLength={2000} rows={3} disabled={pending} className="mt-2 w-full rounded-xl border border-neutral-200 bg-white p-3" placeholder="اكتب سبب طلب الاسترداد..." />
-                </label>
-                <button type="button" disabled={pending || !refundNote.trim()} onClick={requestRefund} className="mt-3 min-h-11 w-full rounded-xl bg-amber-700 px-4 font-bold text-white disabled:opacity-50">طلب استرداد المبلغ</button>
-              </>
+            <h3 className="mb-3 font-extrabold">إدارة الاسترداد</h3>
+            <p className="mb-3 text-sm">
+              حالة الاسترداد:{" "}
+              <strong>
+                {order.refundStatus === "COMPLETED"
+                  ? "مكتمل"
+                  : order.refundStatus === "PENDING"
+                    ? "بانتظار إعادة المبلغ"
+                    : "لا يوجد استرداد"}
+              </strong>
+            </p>
+            {order.refundStatus === "COMPLETED" && (
+              <p className="text-sm text-green-800">تم تسجيل إعادة المبلغ وإتمام الاسترداد.</p>
             )}
+            {(!order.refundStatus || order.refundStatus === "NONE") &&
+              !["SHIPPED", "DELIVERED", "CANCELLED"].includes(order.status) && (
+                <>
+                  <label className="block text-sm font-bold">
+                    سبب الاسترداد
+                    <textarea
+                      value={refundNote}
+                      onChange={(e) => setRefundNote(e.target.value)}
+                      maxLength={2000}
+                      rows={3}
+                      disabled={pending}
+                      className="mt-2 w-full rounded-xl border border-neutral-200 bg-white p-3"
+                      placeholder="اكتب سبب طلب الاسترداد..."
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    disabled={pending || !refundNote.trim()}
+                    onClick={requestRefund}
+                    className="mt-3 min-h-11 w-full rounded-xl bg-amber-700 px-4 font-bold text-white disabled:opacity-50"
+                  >
+                    طلب استرداد المبلغ
+                  </button>
+                </>
+              )}
             {order.refundStatus === "PENDING" && (
               <>
                 <p className="mb-3 text-sm text-amber-900">سبب الاسترداد: {order.refundNote}</p>
                 <label className="flex items-start gap-3 text-sm font-bold text-amber-950">
-                  <input type="checkbox" checked={moneyReturned} onChange={(e) => setMoneyReturned(e.target.checked)} disabled={pending} className="mt-1 h-5 w-5" />
+                  <input
+                    type="checkbox"
+                    checked={moneyReturned}
+                    onChange={(e) => setMoneyReturned(e.target.checked)}
+                    disabled={pending}
+                    className="mt-1 h-5 w-5"
+                  />
                   أؤكد أنني أعدت المبلغ كاملًا للعميل فعليًا خارج الموقع.
                 </label>
-                <button type="button" disabled={pending || !moneyReturned} onClick={completeRefund} className="mt-3 min-h-11 w-full rounded-xl bg-[#171411] px-4 font-bold text-white disabled:opacity-50">تأكيد الاسترداد وإرجاع المخزون وإلغاء الطلب</button>
+                <button
+                  type="button"
+                  disabled={pending || !moneyReturned}
+                  onClick={completeRefund}
+                  className="mt-3 min-h-11 w-full rounded-xl bg-[#171411] px-4 font-bold text-white disabled:opacity-50"
+                >
+                  تأكيد الاسترداد وإلغاء الطلب
+                </button>
               </>
             )}
-            {order.stockDeductedAt == null && order.refundStatus !== "COMPLETED" && <p className="mt-3 text-xs text-red-700">لو ده طلب قديم، راجع سجل المخزون قبل الاسترداد.</p>}
           </section>
         )}
 

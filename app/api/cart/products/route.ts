@@ -20,7 +20,8 @@ export async function POST(request: Request) {
 
     const slugs = body.slugs.filter(
       (slug): slug is string =>
-        typeof slug === "string" && slug.length <= 150
+        typeof slug === "string" &&
+        slug.length <= 150
     );
 
     if (slugs.length > 99) {
@@ -32,7 +33,9 @@ export async function POST(request: Request) {
 
     const products = await prisma.product.findMany({
       where: {
-        slug: { in: slugs },
+        slug: {
+          in: slugs,
+        },
         isActive: true,
       },
       select: {
@@ -40,11 +43,15 @@ export async function POST(request: Request) {
         nameAr: true,
         nameEn: true,
         price: true,
-        stock: true,
+
         images: {
-          orderBy: { sortOrder: "asc" },
+          orderBy: {
+            sortOrder: "asc",
+          },
           take: 1,
-          select: { url: true },
+          select: {
+            url: true,
+          },
         },
       },
     });
@@ -56,14 +63,16 @@ export async function POST(request: Request) {
           nameAr: product.nameAr,
           nameEn: product.nameEn,
           price: Number(product.price),
-          stock: product.stock,
+
           image:
             product.images[0]?.url ??
             "/images/products/placeholder.jpg",
         })),
       },
       {
-        headers: { "Cache-Control": "no-store" },
+        headers: {
+          "Cache-Control": "no-store",
+        },
       }
     );
   } catch {

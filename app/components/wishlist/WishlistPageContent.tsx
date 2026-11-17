@@ -17,8 +17,6 @@ type WishlistProduct = {
   price: number;
   oldPrice: number | null;
   image: string;
-  brandAr: string;
-  brandEn: string;
   isBestSeller: boolean;
 };
 
@@ -32,11 +30,16 @@ export default function WishlistPageContent({
   products,
 }: Props) {
   const isArabic = locale === "ar";
+
   const [savedSlugs, setSavedSlugs] = useState<string[]>([]);
   const [mounted, setMounted] = useState(false);
 
+  // ================= SYNC WISHLIST =================
+
   useEffect(() => {
-    const sync = () => setSavedSlugs(getWishlist());
+    const sync = () => {
+      setSavedSlugs(getWishlist());
+    };
 
     sync();
     setMounted(true);
@@ -50,15 +53,20 @@ export default function WishlistPageContent({
     };
   }, []);
 
+  // ================= FILTER SAVED PRODUCTS =================
+
   const savedProducts = products.filter((product) =>
     savedSlugs.includes(product.slug)
   );
 
-  const productsUrl = isArabic ? "/products" : "/en/products";
+  const productsUrl = isArabic
+    ? "/products"
+    : "/en/products";
 
   return (
     <main className="min-h-screen bg-[#fffaf3]">
-      {/* Header */}
+      {/* ================= HEADER ================= */}
+
       <section className="bg-[#171411] px-5 py-16 text-center text-white sm:py-20">
         <Heart
           size={28}
@@ -80,15 +88,20 @@ export default function WishlistPageContent({
         </p>
       </section>
 
-      {/* Products */}
+      {/* ================= PRODUCTS ================= */}
+
       <section className="mx-auto max-w-360 px-5 py-16 lg:px-8 lg:py-20">
         {!mounted ? (
           <div className="min-h-60" />
         ) : savedProducts.length > 0 ? (
           <>
+            {/* PRODUCTS HEADER */}
+
             <div className="mb-10 flex items-center justify-between border-b border-black/10 pb-5">
               <h2 className="text-2xl font-extrabold text-[#171411]">
-                {isArabic ? "عطوري المفضلة" : "Favorite Perfumes"}
+                {isArabic
+                  ? "عطوري المفضلة"
+                  : "Favorite Perfumes"}
               </h2>
 
               <span className="text-sm text-neutral-500">
@@ -96,6 +109,8 @@ export default function WishlistPageContent({
                 {isArabic ? "منتج" : "Products"}
               </span>
             </div>
+
+            {/* PRODUCTS GRID */}
 
             <div className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
               {savedProducts.map((product) => (
@@ -106,13 +121,16 @@ export default function WishlistPageContent({
                     name: isArabic
                       ? product.nameAr
                       : product.nameEn,
-                    brand: isArabic
-                      ? product.brandAr
-                      : product.brandEn,
+
                     slug: product.slug,
+
                     image: product.image,
+
                     price: product.price,
-                    oldPrice: product.oldPrice ?? undefined,
+
+                    oldPrice:
+                      product.oldPrice ?? undefined,
+
                     badge: product.isBestSeller
                       ? isArabic
                         ? "الأكثر مبيعًا"
@@ -124,6 +142,8 @@ export default function WishlistPageContent({
             </div>
           </>
         ) : (
+          /* ================= EMPTY STATE ================= */
+
           <div className="rounded-3xl border border-[#e5d8c8] bg-[#f7eee3] px-6 py-20 text-center">
             <Heart
               size={42}
@@ -146,7 +166,9 @@ export default function WishlistPageContent({
               href={productsUrl}
               className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#171411] px-7 py-3 text-sm font-bold text-white transition-colors hover:bg-[#a66d36]"
             >
-              {isArabic ? "تصفح العطور" : "Explore Perfumes"}
+              {isArabic
+                ? "تصفح العطور"
+                : "Explore Perfumes"}
 
               {isArabic ? (
                 <ArrowLeft size={17} />

@@ -1,7 +1,12 @@
+
 import AddToCartButton from "@/app/components/cart/AddToCartButton";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpLeft, ArrowUpRight, Eye } from "lucide-react";
+import {
+  ArrowUpLeft,
+  ArrowUpRight,
+  Eye,
+} from "lucide-react";
 import WishlistButton from "@/app/components/product/WishlistButton";
 import type { Locale } from "@/lib/translations";
 
@@ -9,7 +14,6 @@ type ProductCardProps = {
   locale: Locale;
   product: {
     name: string;
-    brand: string;
     slug: string;
     image: string;
     price: number;
@@ -18,19 +22,29 @@ type ProductCardProps = {
   };
 };
 
-export default function ProductCard({ locale, product }: ProductCardProps) {
+export default function ProductCard({
+  locale,
+  product,
+}: ProductCardProps) {
   const isArabic = locale === "ar";
   const prefix = isArabic ? "" : "/en";
+
   const productUrl = `${prefix}/products/${product.slug}`;
 
   const discount =
-    product.oldPrice && product.oldPrice > product.price
-      ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+    product.oldPrice !== undefined &&
+    product.oldPrice > product.price
+      ? Math.round(
+          ((product.oldPrice - product.price) /
+            product.oldPrice) *
+            100
+        )
       : null;
 
-  const formatPrice = (price: number) => price.toLocaleString(isArabic ? "ar-EG" : "en-EG");
-
-  const ArrowIcon = isArabic ? ArrowUpLeft : ArrowUpRight;
+  const formatPrice = (price: number) =>
+    price.toLocaleString(
+      isArabic ? "ar-EG" : "en-EG"
+    );
 
   return (
     <article
@@ -81,7 +95,7 @@ export default function ProductCard({ locale, product }: ProductCardProps) {
           "
         >
           <div className="flex flex-col items-start gap-1.5">
-            {discount !== null && (
+            {discount !== null && discount > 0 && (
               <span
                 className="
                   rounded-md bg-[#a66d36] px-2 py-1
@@ -107,14 +121,21 @@ export default function ProductCard({ locale, product }: ProductCardProps) {
           </div>
 
           <div className="pointer-events-auto shrink-0">
-            <WishlistButton productId={product.slug} locale={locale} />
+            <WishlistButton
+              productId={product.slug}
+              locale={locale}
+            />
           </div>
         </div>
 
-        {/* Image click area */}
-        <Link href={productUrl} aria-label={product.name} className="absolute inset-0 z-10" />
+        {/* IMAGE LINK */}
+        <Link
+          href={productUrl}
+          aria-label={product.name}
+          className="absolute inset-0 z-10"
+        />
 
-        {/* Quick view indicator on desktop */}
+        {/* QUICK VIEW */}
         <div
           className="
             pointer-events-none absolute inset-x-3 bottom-3 z-20
@@ -129,24 +150,15 @@ export default function ProductCard({ locale, product }: ProductCardProps) {
           "
         >
           <Eye size={15} />
-          {isArabic ? "اكتشف العطر" : "Discover Fragrance"}
+          {isArabic
+            ? "اكتشف العطر"
+            : "Discover Fragrance"}
         </div>
       </div>
 
       {/* PRODUCT DETAILS */}
       <div className="flex flex-1 flex-col px-3 pb-3 pt-3.5 sm:px-4 sm:pb-4">
-        {/* Brand */}
-        <p
-          className="
-            mb-1 truncate text-[10px] font-bold
-            uppercase tracking-[0.12em]
-            text-[#a77c4b]
-          "
-        >
-          {product.brand}
-        </p>
-
-        {/* Product name */}
+        {/* PRODUCT NAME */}
         <h3
           className="
             mb-2 min-h-10 line-clamp-2
@@ -156,66 +168,88 @@ export default function ProductCard({ locale, product }: ProductCardProps) {
             sm:text-sm
           "
         >
-          <Link href={productUrl}>{product.name}</Link>
+          <Link href={productUrl}>
+            {product.name}
+          </Link>
         </h3>
 
         {/* PRICE */}
         <div className="mb-6 flex flex-wrap items-baseline gap-x-2 gap-y-1">
           <span className="text-[17px] font-extrabold text-[#171717]">
             {formatPrice(product.price)}
-            <span className="ms-1 text-[11px] font-semibold">{isArabic ? "ج.م" : "EGP"}</span>
+
+            <span className="ms-1 text-[11px] font-semibold">
+              {isArabic ? "ج.م" : "EGP"}
+            </span>
           </span>
 
-          {product.oldPrice !== undefined && product.oldPrice > product.price && (
-            <span className="text-[11px] text-[#999] line-through">{formatPrice(product.oldPrice)}</span>
-          )}
+          {product.oldPrice !== undefined &&
+            product.oldPrice > product.price && (
+              <span className="text-[11px] text-[#999] line-through">
+                {formatPrice(product.oldPrice)}
+              </span>
+            )}
         </div>
 
         {/* BUTTONS */}
         <div className="mt-auto flex w-full items-center gap-2">
-          {/* Add to Cart */}
+          {/* ADD TO CART */}
           <div
             className="
-      min-w-0 flex-1
-      [&_button]:flex!
-      [&_button]:h-10!
-      [&_button]:min-h-0!
-      [&_button]:w-full!
-      [&_button]:items-center!
-      [&_button]:justify-center!
-      [&_button]:gap-1!
-      [&_button]:rounded-lg!
-      [&_button]:bg-[#171717]!
-      [&_button]:px-2!
-      [&_button]:py-0!
-      [&_button]:text-[11px]!
-      [&_button]:font-semibold!
-      [&_button]:text-white!
-      [&_button:hover]:bg-[#a77c4b]!
-    "
+              min-w-0 flex-1
+              [&_button]:flex!
+              [&_button]:h-10!
+              [&_button]:min-h-0!
+              [&_button]:w-full!
+              [&_button]:items-center!
+              [&_button]:justify-center!
+              [&_button]:gap-1!
+              [&_button]:rounded-lg!
+              [&_button]:bg-[#171717]!
+              [&_button]:px-2!
+              [&_button]:py-0!
+              [&_button]:text-[11px]!
+              [&_button]:font-semibold!
+              [&_button]:text-white!
+              [&_button:hover]:bg-[#a77c4b]!
+            "
           >
-            <AddToCartButton slug={product.slug} locale={locale} />
+            <AddToCartButton
+              slug={product.slug}
+              locale={locale}
+            />
           </div>
 
-          {/* Details Icon Button */}
+          {/* DETAILS BUTTON */}
           <Link
             href={productUrl}
-            aria-label={isArabic ? "عرض تفاصيل المنتج" : "View product details"}
-            title={isArabic ? "عرض التفاصيل" : "View details"}
+            aria-label={
+              isArabic
+                ? "عرض تفاصيل المنتج"
+                : "View product details"
+            }
+            title={
+              isArabic
+                ? "عرض التفاصيل"
+                : "View details"
+            }
             className="
-      flex h-10 w-10 shrink-0
-      items-center justify-center
-      rounded-lg
-      border border-[#d8c3a6]
-      bg-[#faf7f2]
-      text-[#8c6239]
-      transition-all duration-300
-      hover:border-[#a77c4b]
-      hover:bg-[#a77c4b]
-      hover:text-white
-    "
+              flex h-10 w-10 shrink-0
+              items-center justify-center
+              rounded-lg
+              border border-[#d8c3a6]
+              bg-[#faf7f2]
+              text-[#8c6239]
+              transition-all duration-300
+              hover:border-[#a77c4b]
+              hover:bg-[#a77c4b]
+              hover:text-white
+            "
           >
-            <Eye size={18} strokeWidth={1.8} />
+            <Eye
+              size={18}
+              strokeWidth={1.8}
+            />
           </Link>
         </div>
       </div>

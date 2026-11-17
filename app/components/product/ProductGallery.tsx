@@ -1,8 +1,8 @@
-
 "use client";
 
 import Image from "next/image";
 import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import WishlistButton from "@/app/components/product/WishlistButton";
 import type { Locale } from "@/lib/translations";
 
@@ -30,15 +30,13 @@ export default function ProductGallery({
   discount,
   productSlug,
 }: ProductGalleryProps) {
-  const fallbackImage = "/images/products/placeholder.jpg";
-
   const galleryImages =
     images.length > 0
       ? images
       : [
           {
             id: "placeholder",
-            url: fallbackImage,
+            url: "/images/products/placeholder.jpg",
             altAr: name,
             altEn: name,
           },
@@ -46,70 +44,82 @@ export default function ProductGallery({
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const selectedImage =
-    galleryImages[selectedIndex] ?? galleryImages[0];
+  const currentIndex = selectedIndex < galleryImages.length ? selectedIndex : 0;
 
-  const selectedAlt = isArabic
-    ? selectedImage.altAr ?? name
-    : selectedImage.altEn ?? name;
+  const selectedImage = galleryImages[currentIndex];
+
+  const selectedAlt = (isArabic ? selectedImage.altAr : selectedImage.altEn) || name;
 
   const locale: Locale = isArabic ? "ar" : "en";
+  const multiple = galleryImages.length > 1;
+
+  const changeImage = (direction: number) => {
+    setSelectedIndex((current) => (current + direction + galleryImages.length) % galleryImages.length);
+  };
 
   return (
-    <div className="mx-auto w-full max-w-[520px]">
-      {/* MAIN IMAGE */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[28px] border border-[#e6d8c6] bg-[#f3eadf]">
-        <Image
-          key={selectedImage.url}
-          src={selectedImage.url}
-          alt={selectedAlt}
-          fill
-          priority
-          sizes="(max-width: 768px) 100vw, 520px"
-          className="object-contain p-5 sm:p-7"
-        />
+    <div className="mx-auto w-full max-w-[290px] min-w-0 sm:max-w-[380px] lg:max-w-[520px] xl:max-w-[600px]">
+      {/* MAIN PHOTO */}
+      <div className="relative">
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[10px] bg-[#f5efe7] ring-1 ring-[#e9dfd2]">
+          <Image
+            key={selectedImage.id}
+            src={selectedImage.url}
+            alt={selectedAlt}
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+            className="object-cover object-center"
+          />
+        </div>
 
-        {/* TOP BADGES AND WISHLIST */}
-        <div className="pointer-events-none absolute inset-x-4 top-4 z-20 flex items-start justify-between gap-3 sm:inset-x-5 sm:top-5">
-          {/* DISCOUNT + WISHLIST */}
-          <div className="pointer-events-auto flex shrink-0 items-center gap-2">
-            {discount !== null && (
-              <span className="inline-flex h-10 items-center justify-center rounded-full bg-[#a66d36] px-3 text-xs font-bold text-white shadow-sm">
-                -{discount}%
-              </span>
+        {/* TOP LABELS */}
+        <div className="pointer-events-none absolute inset-x-3 top-3 z-20 flex items-start justify-between gap-2 sm:inset-x-5 sm:top-5">
+          <div className="pointer-events-auto flex items-center gap-2">
+            <WishlistButton productId={productSlug} locale={locale} />
+
+            {discount !== null && discount > 0 && (
+              <span className="rounded-md bg-[#9b7045] px-3 py-2 text-xs font-bold text-white">-{discount}%</span>
             )}
-
-            <WishlistButton
-              productId={productSlug}
-              locale={locale}
-            />
           </div>
 
-          {/* BEST SELLER */}
           {isBestSeller && (
-            <span className="rounded-full bg-[#171717] px-3 py-3 text-[10px] font-bold tracking-[0.04em] text-white shadow-sm sm:px-4">
+            <span className="rounded-md bg-[#29231d]/90 px-3 py-2 text-[10px] font-bold text-white">
               {isArabic ? "الأكثر مبيعًا" : "BEST SELLER"}
             </span>
           )}
         </div>
 
-        {/* IMAGE COUNTER */}
-        {galleryImages.length > 1 && (
-          <span className="absolute bottom-5 end-5 z-10 rounded-full bg-[#171717]/75 px-3 py-1.5 text-[10px] font-bold text-white backdrop-blur-sm">
-            {selectedIndex + 1} / {galleryImages.length}
-          </span>
+        {/* NAVIGATION */}
+        {multiple && (
+          <>
+            <button
+              type="button"
+              onClick={() => changeImage(-1)}
+              aria-label={isArabic ? "الصورة السابقة" : "Previous image"}
+              className="absolute start-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#30271e] shadow-sm transition hover:bg-white sm:start-5"
+            >
+              {isArabic ? <ChevronRight size={19} /> : <ChevronLeft size={19} />}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => changeImage(1)}
+              aria-label={isArabic ? "الصورة التالية" : "Next image"}
+              className="absolute end-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-[#30271e] shadow-sm transition hover:bg-white sm:end-5"
+            >
+              {isArabic ? <ChevronLeft size={19} /> : <ChevronRight size={19} />}
+            </button>
+          </>
         )}
       </div>
-
       {/* THUMBNAILS */}
-      {galleryImages.length > 1 && (
-        <div className="mt-4 flex justify-center gap-3 overflow-x-auto pb-2">
+      {multiple && (
+        <div className="mt-4 flex max-w-full justify-start gap-2.5 overflow-x-auto px-0.5 py-1 sm:gap-3">
           {galleryImages.map((image, index) => {
-            const active = index === selectedIndex;
+            const active = index === currentIndex;
 
-            const alt = isArabic
-              ? image.altAr ?? name
-              : image.altEn ?? name;
+            const alt = (isArabic ? image.altAr : image.altEn) || name;
 
             return (
               <button
@@ -117,28 +127,23 @@ export default function ProductGallery({
                 type="button"
                 onClick={() => setSelectedIndex(index)}
                 aria-pressed={active}
-                aria-label={
-                  isArabic
-                    ? `عرض الصورة ${index + 1}`
-                    : `View image ${index + 1}`
-                }
-                className={`relative h-[90px] w-[72px] shrink-0 overflow-hidden rounded-[14px] bg-[#f3eadf] transition-all duration-300 ${
+                aria-label={isArabic ? `عرض الصورة ${index + 1}` : `View image ${index + 1}`}
+                className={`relative aspect-[4/5] w-[65px] shrink-0 overflow-hidden rounded-md transition-all duration-200 sm:w-[76px] ${
                   active
-                    ? "border-2 border-[#a66d36]"
-                    : "border border-[#dfd1bf] hover:border-[#b98a58]"
+                    ? "ring-2 ring-[#a77b4d] ring-offset-2 ring-offset-[#fcf9f5]"
+                    : "opacity-65 ring-1 ring-[#e4d9cb] hover:opacity-100"
                 }`}
               >
-                <Image
-                  src={image.url}
-                  alt={alt}
-                  fill
-                  sizes="72px"
-                  className="object-contain p-2"
-                />
+                <Image src={image.url} alt={alt} fill sizes="76px" className="object-cover object-center" />
               </button>
             );
           })}
         </div>
+      )}
+      {multiple && (
+        <p className="mt-3 text-center text-xs tracking-widest text-[#a59a8e]">
+          {currentIndex + 1} / {galleryImages.length}
+        </p>
       )}
     </div>
   );

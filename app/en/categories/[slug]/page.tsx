@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -25,7 +26,6 @@ export async function generateMetadata({
     where: {
       slug,
     },
-
     select: {
       nameEn: true,
       descriptionEn: true,
@@ -36,8 +36,14 @@ export async function generateMetadata({
   if (!category || !category.isActive) {
     return {
       title: "Category Not Found",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
+
+  const encodedSlug = encodeURIComponent(slug);
 
   return {
     title: category.nameEn,
@@ -47,11 +53,12 @@ export async function generateMetadata({
       `Shop ${category.nameEn} at Wasama Perfume.`,
 
     alternates: {
-      canonical: `/en/categories/${slug}`,
+      canonical: `/en/categories/${encodedSlug}`,
 
       languages: {
-        "ar-EG": `/categories/${slug}`,
-        "en": `/en/categories/${slug}`,
+        "ar-EG": `/categories/${encodedSlug}`,
+        en: `/en/categories/${encodedSlug}`,
+        "x-default": `/categories/${encodedSlug}`,
       },
     },
   };
@@ -88,13 +95,10 @@ export default async function EnglishCategoryPage({
         ],
 
         include: {
-          brand: true,
-
           images: {
             orderBy: {
               sortOrder: "asc",
             },
-
             take: 1,
           },
         },
@@ -213,16 +217,13 @@ export default async function EnglishCategoryPage({
             {/* ================= PRODUCT GRID ================= */}
 
             {category.products.length > 0 ? (
-              <div className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-4 lg:gap-x-6 lg:gap-y-12">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-5 lg:grid-cols-5 lg:gap-x-6 lg:gap-y-12">
                 {category.products.map((product) => (
                   <ProductCard
                     key={product.id}
                     locale="en"
                     product={{
                       name: product.nameEn,
-
-                      brand:
-                        product.brand?.nameEn ?? "",
 
                       slug: product.slug,
 

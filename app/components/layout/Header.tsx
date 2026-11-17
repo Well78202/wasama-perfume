@@ -19,6 +19,8 @@ export default function Header({ locale }: HeaderProps) {
   const isArabic = locale === "ar";
   const prefix = isArabic ? "" : "/en";
 
+  // ================= NAVIGATION =================
+
   const navigation = [
     {
       name: t.home,
@@ -39,10 +41,6 @@ export default function Header({ locale }: HeaderProps) {
     {
       name: t.oriental,
       href: `${prefix}/categories/oriental`,
-    },
-    {
-      name: t.brands,
-      href: `${prefix}/brands`,
     },
     {
       name: t.offers,
@@ -69,7 +67,8 @@ export default function Header({ locale }: HeaderProps) {
             lg:px-8
           "
         >
-          {/* MOBILE MENU */}
+          {/* ================= MOBILE MENU ================= */}
+
           <div className="flex shrink-0 items-center lg:hidden">
             <MobileMenu
               navigation={navigation}
@@ -77,7 +76,8 @@ export default function Header({ locale }: HeaderProps) {
             />
           </div>
 
-          {/* LOGO */}
+          {/* ================= LOGO ================= */}
+
           <Link
             href={isArabic ? "/" : "/en"}
             aria-label={
@@ -115,7 +115,8 @@ export default function Header({ locale }: HeaderProps) {
             />
           </Link>
 
-          {/* DESKTOP NAVIGATION */}
+          {/* ================= DESKTOP NAVIGATION ================= */}
+
           <nav
             aria-label={
               isArabic
@@ -175,7 +176,8 @@ export default function Header({ locale }: HeaderProps) {
             </div>
           </nav>
 
-          {/* ACTIONS */}
+          {/* ================= ACTIONS ================= */}
+
           <div
             className="
               flex
@@ -188,17 +190,20 @@ export default function Header({ locale }: HeaderProps) {
               lg:gap-3
             "
           >
-            {/* LANGUAGE */}
+            {/* LANGUAGE SWITCHER */}
+
             <div className="flex shrink-0 items-center">
               <LanguageSwitcher locale={locale} />
             </div>
 
             {/* WISHLIST */}
+
             <div className="flex shrink-0 items-center">
               <WishlistHeaderButton locale={locale} />
             </div>
 
             {/* CART WITH LIVE COUNTER */}
+
             <div className="flex shrink-0 items-center">
               <CartHeaderButton locale={locale} />
             </div>

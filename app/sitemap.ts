@@ -1,11 +1,13 @@
+
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://wasamaperfume-eg.store/"
-).replace(/\/$/, "");
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  "https://wasamaperfume-eg.store"
+).replace(/\/+$/, "");
 
 function localizedEntry(
   path: string,
@@ -20,6 +22,7 @@ function localizedEntry(
     lastModified,
     changeFrequency,
     priority,
+
     alternates: {
       languages: {
         "ar-EG": arUrl,
@@ -30,15 +33,26 @@ function localizedEntry(
   };
 
   return [
-    { url: arUrl, ...common },
-    { url: enUrl, ...common },
+    {
+      url: arUrl,
+      ...common,
+    },
+    {
+      url: enUrl,
+      ...common,
+    },
   ];
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [products, categories, brands] = await Promise.all([
+  // ================= FETCH ACTIVE PRODUCTS & CATEGORIES =================
+
+  const [products, categories] = await Promise.all([
     prisma.product.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+      },
+
       select: {
         slug: true,
         updatedAt: true,
@@ -46,15 +60,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }),
 
     prisma.category.findMany({
-      where: { isActive: true },
-      select: {
-        slug: true,
-        updatedAt: true,
+      where: {
+        isActive: true,
       },
-    }),
 
-    prisma.brand.findMany({
-      where: { isActive: true },
       select: {
         slug: true,
         updatedAt: true,
@@ -64,10 +73,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const now = new Date();
 
+  // ================= STATIC PAGES =================
+
   const staticPages: MetadataRoute.Sitemap = [
     ...localizedEntry("/", now, "daily", 1),
+
     ...localizedEntry("/products", now, "daily", 0.9),
   ];
+
+  // ================= PRODUCT PAGES =================
 
   const productPages = products.flatMap((product) =>
     localizedEntry(
@@ -78,6 +92,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   );
 
+  // ================= CATEGORY PAGES =================
+
   const categoryPages = categories.flatMap((category) =>
     localizedEntry(
       `/categories/${encodeURIComponent(category.slug)}`,
@@ -87,19 +103,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   );
 
-  const brandPages = brands.flatMap((brand) =>
-    localizedEntry(
-      `/brands/${encodeURIComponent(brand.slug)}`,
-      brand.updatedAt,
-      "weekly",
-      0.7
-    )
+  // ================= OFFERS PAGES =================
+
+  const offersCategory = categories.find(
+    (category) => category.slug === "offers"
   );
+
+  const offersPages: MetadataRoute.Sitemap = offersCategory
+    ? localizedEntry(
+        "/offers",
+        offersCategory.updatedAt,
+        "weekly",
+        0.8
+      )
+    : [];
+
+  // ================= FINAL SITEMAP =================
 
   return [
     ...staticPages,
     ...productPages,
     ...categoryPages,
-    ...brandPages,
+    ...offersPages,
   ];
 }

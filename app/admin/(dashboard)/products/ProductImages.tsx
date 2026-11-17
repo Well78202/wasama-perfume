@@ -302,7 +302,7 @@ export default function ProductImages({
                 <img
                   src={url}
                   alt={`صورة المنتج ${index + 1}`}
-                  className="aspect-[4/5] w-full object-contain"
+                  className="aspect-4/5 w-full object-contain"
                 />
 
                 {index === 0 && (

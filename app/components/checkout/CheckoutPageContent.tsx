@@ -35,8 +35,6 @@ type CartProduct = {
 
   price: number;
 
-  stock: number;
-
   image: string;
 };
 
@@ -234,7 +232,8 @@ export default function CheckoutPageContent({ locale }: { locale: Locale }) {
   const total = subtotal + shipping;
 
   const cartValid =
-    rows.length > 0 && rows.every((row) => row.product && row.quantity > 0 && row.product.stock >= row.quantity);
+    rows.length > 0 &&
+    rows.every((row) => row.product !== undefined && Number.isInteger(row.quantity) && row.quantity >= 1 && row.quantity <= 99);
 
   const availableMethods: CheckoutForm["paymentMethod"][] = [
     ...(paymentSettings.vodafoneCashEnabled && paymentSettings.vodafoneCashNumber.trim()
@@ -917,8 +916,8 @@ export default function CheckoutPageContent({ locale }: { locale: Locale }) {
             {!cartValid && (
               <p className="mt-4 text-xs leading-6 text-red-600">
                 {ar
-                  ? "بعض المنتجات غير متاحة بالكمية المطلوبة. راجع السلة."
-                  : "Some products are unavailable in the requested quantities."}
+                  ? "بعض المنتجات لم تعد متاحة، أو الكمية غير صالحة (من 1 إلى 99). راجع السلة."
+                  : "Some products are unavailable, or a quantity is invalid (1–99). Review your cart."}
               </p>
             )}
 

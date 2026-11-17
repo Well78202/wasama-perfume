@@ -18,38 +18,18 @@ export const dynamic = "force-dynamic";
 export default async function NewProductPage() {
   await requireAdmin();
 
-  const [categories, brands] = await Promise.all([
-    prisma.category.findMany({
-      where: {
-        isActive: true,
-      },
-      orderBy: {
-        nameAr: "asc",
-      },
-      select: {
-        id: true,
-        nameAr: true,
-      },
-    }),
+  const categories = await prisma.category.findMany({
+    where: {
+      isActive: true,
+    },
+    orderBy: {
+      nameAr: "asc",
+    },
+    select: {
+      id: true,
+      nameAr: true,
+    },
+  });
 
-    prisma.brand.findMany({
-      where: {
-        isActive: true,
-      },
-      orderBy: {
-        nameAr: "asc",
-      },
-      select: {
-        id: true,
-        nameAr: true,
-      },
-    }),
-  ]);
-
-  return (
-    <ProductForm
-      categories={categories}
-      brands={brands}
-    />
-  );
+  return <ProductForm categories={categories} />;
 }

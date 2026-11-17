@@ -19,14 +19,15 @@ export default async function BestSellers({
   const prefix = isArabic ? "" : "/en";
   const ArrowIcon = isArabic ? ArrowLeft : ArrowRight;
 
-  // Fetch products from database
+  // ================= FETCH PRODUCTS =================
+
   const dbProducts = await prisma.product.findMany({
     where: {
       isActive: true,
       isBestSeller: true,
     },
+
     include: {
-      brand: true,
       images: {
         orderBy: {
           sortOrder: "asc",
@@ -34,19 +35,20 @@ export default async function BestSellers({
         take: 1,
       },
     },
+
     orderBy: {
       createdAt: "desc",
     },
+
     take: 12,
   });
 
-  // Convert database products to ProductCard format
-  const products = dbProducts.map((product) => ({
-    name: isArabic ? product.nameAr : product.nameEn,
+  // ================= FORMAT PRODUCTS =================
 
-    brand: isArabic
-      ? (product.brand?.nameAr ?? "")
-      : (product.brand?.nameEn ?? ""),
+  const products = dbProducts.map((product) => ({
+    name: isArabic
+      ? product.nameAr
+      : product.nameEn,
 
     slug: product.slug,
 
@@ -68,12 +70,12 @@ export default async function BestSellers({
 
   return (
     <section className="overflow-hidden bg-white py-16 sm:py-20 lg:py-24">
-      <div className="mx-auto max-w-[1440px] px-5 lg:px-8">
+      <div className="mx-auto max-w-360 px-5 lg:px-8">
 
-        {/* Section Heading */}
+        {/* ================= SECTION HEADING ================= */}
+
         <div className="mb-10 flex items-end justify-between gap-6 lg:mb-12">
           <div className="max-w-2xl">
-
             <p className="mb-3 text-xs font-bold tracking-[0.2em] text-[#a66d36]">
               {t.eyebrow}
             </p>
@@ -87,7 +89,8 @@ export default async function BestSellers({
             </p>
           </div>
 
-          {/* Desktop View All */}
+          {/* DESKTOP VIEW ALL */}
+
           <Link
             href={`${prefix}/products`}
             className="
@@ -113,7 +116,8 @@ export default async function BestSellers({
           </Link>
         </div>
 
-        {/* Products Slider */}
+        {/* ================= PRODUCTS SLIDER ================= */}
+
         {products.length > 0 ? (
           <BestSellersSlider
             locale={locale}
@@ -129,7 +133,8 @@ export default async function BestSellers({
           </div>
         )}
 
-        {/* Mobile View All */}
+        {/* ================= MOBILE VIEW ALL ================= */}
+
         <div className="mt-10 text-center sm:hidden">
           <Link
             href={`${prefix}/products`}

@@ -7,7 +7,6 @@ import type { Locale } from "@/lib/translations";
 type ProductsPageContentProps = {
   locale: Locale;
   query?: string;
-  brand?: string;
   category?: string;
   sort?: string;
 };
@@ -15,30 +14,18 @@ type ProductsPageContentProps = {
 export default async function ProductsPageContent({
   locale,
   query = "",
-  brand = "",
   category = "",
   sort = "newest",
 }: ProductsPageContentProps) {
   const isArabic = locale === "ar";
+
   const searchQuery = query.trim().slice(0, 100);
 
   const selectedSort = ["newest", "price-asc", "price-desc"].includes(sort) ? sort : "newest";
 
-  const [brands, categories, products] = await Promise.all([
-    prisma.brand.findMany({
-      where: {
-        isActive: true,
-      },
-      select: {
-        slug: true,
-        nameAr: true,
-        nameEn: true,
-      },
-      orderBy: {
-        nameEn: "asc",
-      },
-    }),
+  // ================= DATA =================
 
+  const [categories, products] = await Promise.all([
     prisma.category.findMany({
       where: {
         isActive: true,
@@ -57,20 +44,11 @@ export default async function ProductsPageContent({
       where: {
         isActive: true,
 
-        ...(brand
-          ? {
-              brand: {
-                is: {
-                  slug: brand,
-                },
-              },
-            }
-          : {}),
-
         ...(category
           ? {
               category: {
                 slug: category,
+                isActive: true,
               },
             }
           : {}),
@@ -90,26 +68,6 @@ export default async function ProductsPageContent({
                     mode: "insensitive" as const,
                   },
                 },
-                {
-                  brand: {
-                    is: {
-                      nameAr: {
-                        contains: searchQuery,
-                        mode: "insensitive" as const,
-                      },
-                    },
-                  },
-                },
-                {
-                  brand: {
-                    is: {
-                      nameEn: {
-                        contains: searchQuery,
-                        mode: "insensitive" as const,
-                      },
-                    },
-                  },
-                },
               ],
             }
           : {}),
@@ -123,7 +81,6 @@ export default async function ProductsPageContent({
             : { createdAt: "desc" },
 
       include: {
-        brand: true,
         images: {
           orderBy: {
             sortOrder: "asc",
@@ -169,9 +126,7 @@ export default async function ProductsPageContent({
           {/* FILTERS */}
           <ProductFilters
             locale={locale}
-            brands={brands}
             categories={categories}
-            selectedBrand={brand}
             selectedCategory={category}
             selectedSort={selectedSort}
           />
@@ -189,15 +144,12 @@ export default async function ProductsPageContent({
           {/* PRODUCT GRID */}
           {products.length > 0 ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-              {" "}
               {products.map((product) => (
                 <ProductCard
                   key={product.id}
                   locale={locale}
                   product={{
                     name: isArabic ? product.nameAr : product.nameEn,
-
-                    brand: isArabic ? (product.brand?.nameAr ?? "") : (product.brand?.nameEn ?? ""),
 
                     slug: product.slug,
 
@@ -216,7 +168,7 @@ export default async function ProductsPageContent({
             <div className="flex min-h-96 items-center justify-center rounded-2xl border border-[#eadfce] bg-white px-6 text-center">
               <div>
                 <h2 className="text-xl font-bold text-[#171717]">
-                  {searchQuery || brand || category
+                  {searchQuery || category
                     ? isArabic
                       ? "لا توجد منتجات مطابقة"
                       : "No matching products found"
@@ -226,7 +178,7 @@ export default async function ProductsPageContent({
                 </h2>
 
                 <p className="mt-2 text-sm text-neutral-500">
-                  {searchQuery || brand || category
+                  {searchQuery || category
                     ? isArabic
                       ? "جرّب تغيير البحث أو الفلاتر."
                       : "Try changing your search or filters."

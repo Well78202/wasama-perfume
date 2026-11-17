@@ -14,6 +14,14 @@ export const metadata: Metadata = {
   title: "Perfume Categories | Wasama Perfume",
   description:
     "Explore perfume categories at Wasama Perfume and shop men's, women's and oriental fragrances.",
+  alternates: {
+    canonical: "/en/categories",
+    languages: {
+      "ar-EG": "/categories",
+      en: "/en/categories",
+      "x-default": "/categories",
+    },
+  },
 };
 
 export default async function EnglishCategoriesPage() {

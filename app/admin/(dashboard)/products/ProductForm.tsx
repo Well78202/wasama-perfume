@@ -1,10 +1,15 @@
+
 "use client";
 
 import { useActionState } from "react";
 import Link from "next/link";
 import { Save, ArrowRight, PackagePlus } from "lucide-react";
 
-import { createProduct, updateProduct, type ProductFormState } from "./actions";
+import {
+  createProduct,
+  updateProduct,
+  type ProductFormState,
+} from "./actions";
 
 import ProductImages from "./ProductImages";
 
@@ -27,9 +32,7 @@ export type EditableProduct = {
   metaDescriptionEn: string | null;
   price: string;
   oldPrice: string | null;
-  stock: number;
   categoryId: string;
-  brandId: string | null;
   isActive: boolean;
   isFeatured: boolean;
   isBestSeller: boolean;
@@ -38,7 +41,6 @@ export type EditableProduct = {
 
 type Props = {
   categories: Option[];
-  brands: Option[];
   product?: EditableProduct;
 };
 
@@ -49,15 +51,27 @@ const initialState: ProductFormState = {
 const inputClass =
   "mt-2 h-12 w-full min-w-0 rounded-xl border border-neutral-200 bg-[#faf9f7] px-4 text-sm outline-none transition focus:border-[#a66d36]";
 
-const labelClass = "block min-w-0 text-sm font-bold text-[#171411]";
+const labelClass =
+  "block min-w-0 text-sm font-bold text-[#171411]";
 
-export default function ProductForm({ categories, brands, product }: Props) {
-  const action = product ? updateProduct.bind(null, product.id) : createProduct;
+export default function ProductForm({
+  categories,
+  product,
+}: Props) {
+  const action = product
+    ? updateProduct.bind(null, product.id)
+    : createProduct;
 
-  const [state, formAction, pending] = useActionState(action, initialState);
+  const [state, formAction, pending] = useActionState(
+    action,
+    initialState
+  );
 
   return (
-    <main dir="rtl" className="mx-auto max-w-4xl pb-24 sm:pb-8">
+    <main
+      dir="rtl"
+      className="mx-auto max-w-4xl pb-24 sm:pb-8"
+    >
       {/* Page Header */}
       <div className="mb-7">
         <Link
@@ -74,9 +88,13 @@ export default function ProductForm({ categories, brands, product }: Props) {
           </div>
 
           <div>
-            <h1 className="text-2xl font-extrabold sm:text-3xl">{product ? "تعديل المنتج" : "إضافة منتج جديد"}</h1>
+            <h1 className="text-2xl font-extrabold sm:text-3xl">
+              {product ? "تعديل المنتج" : "إضافة منتج جديد"}
+            </h1>
 
-            <p className="mt-1 text-xs text-neutral-500">أدخل بيانات المنتج بالعربي والإنجليزي</p>
+            <p className="mt-1 text-xs text-neutral-500">
+              أدخل بيانات المنتج بالعربي والإنجليزي
+            </p>
           </div>
         </div>
       </div>
@@ -84,7 +102,9 @@ export default function ProductForm({ categories, brands, product }: Props) {
       <form action={formAction} className="space-y-5">
         {/* Basic Information */}
         <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
-          <h2 className="mb-6 text-lg font-extrabold">المعلومات الأساسية</h2>
+          <h2 className="mb-6 text-lg font-extrabold">
+            المعلومات الأساسية
+          </h2>
 
           <div className="grid gap-5 sm:grid-cols-2">
             <label className={labelClass}>
@@ -164,13 +184,19 @@ export default function ProductForm({ categories, brands, product }: Props) {
         {/* SEO Settings */}
         <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
           <div className="mb-6">
-            <h2 className="text-lg font-extrabold">تحسين محركات البحث SEO</h2>
-            <p className="mt-1 text-xs text-neutral-500">إعدادات ظهور المنتج في نتائج بحث Google بالعربي والإنجليزي</p>
+            <h2 className="text-lg font-extrabold">
+              تحسين محركات البحث SEO
+            </h2>
+            <p className="mt-1 text-xs text-neutral-500">
+              إعدادات ظهور المنتج في نتائج بحث Google بالعربي والإنجليزي
+            </p>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2">
             <div className="space-y-4">
-              <h3 className="font-bold text-[#a66d36]">SEO بالعربي</h3>
+              <h3 className="font-bold text-[#a66d36]">
+                SEO بالعربي
+              </h3>
 
               <label className={labelClass}>
                 عنوان SEO بالعربي
@@ -189,7 +215,9 @@ export default function ProductForm({ categories, brands, product }: Props) {
                   name="metaDescriptionAr"
                   rows={4}
                   maxLength={500}
-                  defaultValue={product?.metaDescriptionAr ?? ""}
+                  defaultValue={
+                    product?.metaDescriptionAr ?? ""
+                  }
                   className={`${inputClass} h-auto py-3`}
                   placeholder="وصف مختصر وجذاب للمنتج..."
                 />
@@ -197,7 +225,9 @@ export default function ProductForm({ categories, brands, product }: Props) {
             </div>
 
             <div className="space-y-4">
-              <h3 className="font-bold text-[#a66d36]">English SEO</h3>
+              <h3 className="font-bold text-[#a66d36]">
+                English SEO
+              </h3>
 
               <label className={labelClass}>
                 English SEO Title
@@ -218,7 +248,9 @@ export default function ProductForm({ categories, brands, product }: Props) {
                   rows={4}
                   dir="ltr"
                   maxLength={500}
-                  defaultValue={product?.metaDescriptionEn ?? ""}
+                  defaultValue={
+                    product?.metaDescriptionEn ?? ""
+                  }
                   className={`${inputClass} h-auto py-3`}
                   placeholder="Discover this fragrance..."
                 />
@@ -227,11 +259,13 @@ export default function ProductForm({ categories, brands, product }: Props) {
           </div>
         </section>
 
-        {/* Price and Stock */}
+        {/* Prices */}
         <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
-          <h2 className="mb-6 text-lg font-extrabold">السعر والمخزون</h2>
+          <h2 className="mb-6 text-lg font-extrabold">
+            الأسعار
+          </h2>
 
-          <div className="grid gap-5 sm:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2">
             <label className={labelClass}>
               السعر بالجنيه *
               <input
@@ -262,62 +296,47 @@ export default function ProductForm({ categories, brands, product }: Props) {
                 placeholder="650"
               />
             </label>
-
-            <label className={labelClass}>
-              الكمية في المخزون *
-              <input
-                name="stock"
-                type="number"
-                min="0"
-                step="1"
-                required
-                dir="ltr"
-                defaultValue={product?.stock ?? 0}
-                className={inputClass}
-              />
-            </label>
           </div>
         </section>
 
-        {/* Category and Brand */}
+        {/* Category */}
         <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
-          <h2 className="mb-6 text-lg font-extrabold">التصنيف والبراند</h2>
+          <h2 className="mb-6 text-lg font-extrabold">
+            التصنيف
+          </h2>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <label className={labelClass}>
-              التصنيف *
-              <select name="categoryId" required defaultValue={product?.categoryId ?? ""} className={inputClass}>
-                <option value="">اختر التصنيف</option>
+          <label className={labelClass}>
+            التصنيف *
+            <select
+              name="categoryId"
+              required
+              defaultValue={product?.categoryId ?? ""}
+              className={inputClass}
+            >
+              <option value="">اختر التصنيف</option>
 
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.nameAr}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <label className={labelClass}>
-              البراند
-              <select name="brandId" defaultValue={product?.brandId ?? ""} className={inputClass}>
-                <option value="">بدون براند</option>
-
-                {brands.map((brand) => (
-                  <option key={brand.id} value={brand.id}>
-                    {brand.nameAr}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
+              {categories.map((category) => (
+                <option
+                  key={category.id}
+                  value={category.id}
+                >
+                  {category.nameAr}
+                </option>
+              ))}
+            </select>
+          </label>
         </section>
 
         {/* Product Images */}
-        <ProductImages initialImages={product?.imageUrls ?? []} />
+        <ProductImages
+          initialImages={product?.imageUrls ?? []}
+        />
 
         {/* Display Settings */}
         <section className="rounded-2xl border border-black/5 bg-white p-4 sm:p-7">
-          <h2 className="mb-5 text-lg font-extrabold">إعدادات العرض</h2>
+          <h2 className="mb-5 text-lg font-extrabold">
+            إعدادات العرض
+          </h2>
 
           <div className="space-y-5">
             {[
@@ -337,7 +356,10 @@ export default function ProductForm({ categories, brands, product }: Props) {
                 checked: product?.isBestSeller ?? false,
               },
             ].map((item) => (
-              <label key={item.name} className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-bold">
+              <label
+                key={item.name}
+                className="flex min-h-11 cursor-pointer items-center gap-3 text-sm font-bold"
+              >
                 <input
                   type="checkbox"
                   name={item.name}
@@ -353,7 +375,10 @@ export default function ProductForm({ categories, brands, product }: Props) {
 
         {/* Errors */}
         {state.error && (
-          <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700">
+          <p
+            role="alert"
+            className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700"
+          >
             {state.error}
           </p>
         )}
@@ -365,9 +390,16 @@ export default function ProductForm({ categories, brands, product }: Props) {
             disabled={pending || categories.length === 0}
             className="flex min-h-13 w-full cursor-pointer items-center justify-center gap-3 rounded-xl bg-[#171411] px-6 font-bold text-white transition hover:bg-[#352b23] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
           >
-            <Save size={19} className="text-[#d5a86e]" />
+            <Save
+              size={19}
+              className="text-[#d5a86e]"
+            />
 
-            {pending ? "جاري الحفظ..." : product ? "حفظ التعديلات" : "إضافة المنتج"}
+            {pending
+              ? "جاري الحفظ..."
+              : product
+                ? "حفظ التعديلات"
+                : "إضافة المنتج"}
           </button>
         </div>
       </form>
